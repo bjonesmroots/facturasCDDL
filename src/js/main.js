@@ -4,7 +4,7 @@ const path       = require('path');
 const assestPath = electron.app.getPath("userData");
 
 window.$ = window.jQuery = require('jquery');
-
+console.log('main.js');
 bulmaToast.setDefaults({
     type: 'is-danger',
     duration: 3000,

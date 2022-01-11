@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Croessant</title>
+    <title>Facturas CDDL</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/css/datepicker.min.css">
@@ -25,7 +25,7 @@
           <div class="navbar-brand">
             <div class="navbar-item">
               <img src="../../assets/icon.png" alt="Logo">
-              <span>Croessant</span>
+              <span>Facturas CDDL</span>
             </div>
           </div>
           <div class="navbar-menu">
@@ -48,22 +48,11 @@
         </nav>
       </div>
       <div class="hero-body">
-        <p class="title has-text-centered mb-0">Generación</p>
-        <p class="title has-text-centered">de comprobantes</p>
+        <p class="title has-text-centered mb-0">Generación de comprobantes</p>
       </div>
     </section>
     <section id="app-body" class="section is-flex is-flex-direction-column is-flex-grow-1">
         <fieldset id="invoice-fields" class="is-flex-grow-1">
-          <div class="field">
-            <label class="label">Concepto</label>
-            <div class="select">
-              <select id="concept" data-val="2">
-                <option value="1">Productos</option>
-                <option value="2">Servicios</option>
-                <option value="3">Productos y Servicios</option>
-              </select>
-            </div>
-          </div>
           <div class="field is-grouped">
             <div class="field is-expanded">
               <label class="label">Punto de venta</label>
@@ -78,22 +67,112 @@
               </div>
               <p class="help is-danger is-hidden">Fecha inválida.</p>
             </div>
-          </div>
-          <div class="field">
-            <label class="label">Monto</label>
-            <div class="control">
-                <input id="amount" class="input" type="number">
+            <div class="field is-expanded">
+              <label class="label">Concepto</label>
+              <div class="select">
+                <select id="concept" data-val="2">
+                  <option value="1">Productos</option>
+                  <option value="2">Servicios</option>
+                  <option value="3">Productos y Servicios</option>
+                </select>
+              </div>
             </div>
-            <p class="help is-danger is-hidden">Debe ser mayor a 0 y menor a 7500.</p>
+            <div class="field">
+              <label class="label">Tipo Comprobante</label>
+              <div class="select">
+                <select id="invoiceType" data-val="2">
+                  <option selected value="1">Factura A</option>
+                  <option value="6">Factura B</option>
+                  <option value="11">Factura C</option>
+                  <option value="3">Nota Credito A</option>
+                  <option value="8">Nota Credito B</option>
+                  <option value="13">Nota Credito C</option>
+                </select>
+              </div>
+            </div>
           </div>
+          <div class="field is-grouped">
+            <div class="field">
+              <label class="label">Tipo Documento</label>
+              <div class="select">
+                <select id="tipoDocumento" data-val="2">
+                  <option value="99">Consumidor Final</option>
+                  <option value="96">DNI</option>
+                  <option value="80">CUIT</option>
+                  <option value="86">CUIL</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label id="lblCuit" class="label">Cuit</label>
+              <div class="control">
+                  <input disabled id="cuit" value="0" class="input">
+              </div>
+            </div>
+            <div class="field is-expanded">
+              <label class="label">Razon Social</label>
+              <div class="control">
+                  <input disabled id="razonSocial" value="Consumidor Final" class="input">
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Condición I.V.A.</label>
+              <div class="select">
+                <select id="condicionIva" data-val="2">
+                  <option value="0">Consumidor Final</option>
+                  <option value="6">Monotributo</option>
+                  <option value="11">Responsable Inscripto</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="detalle">
+            <div class="field is-grouped item">
+              <div class="field">
+                <label class="label">Codigo</label>
+                <div class="control">
+                    <input class="input codigo">
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Detalle</label>
+                <div class="control">
+                    <input class="input detalle">
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">I.V.A.</label>
+                <div class="select">
+                  <select class="iva" data-val="2">
+                    <option selected value="21">21%</option>
+                    <option value="10.5">10.5%</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Neto</label>
+                <div class="control">
+                    <input disabled class="input neto" type="number">
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Subtotal</label>
+                <div class="control">
+                    <input class="input amount" type="number">
+                </div>
+                <p class="help is-danger is-hidden">Debe ser mayor a 0 y menor a 7500.</p>
+              </div>
+            </div>
+          </div>
+          <button id="agregarDetalle" class="button is-normal is-info is-fullwidth mt-3" onclick="agregarDetalle();" type="button">Agregar Detalle</button>
         </fieldset>
         <button id="generateInvoice" class="button is-medium is-success is-loading is-fullwidth" onclick="generateInvoice(this);" type="button">Generar</button>
     </section>
-    <div id="page-loader" class="pageloader is-bottom-to-top is-active"><span class="title">Conectando con la AFIP...</span></div>
+    <div id="page-loader" class="pageloader is-bottom-to-top is-active"><span class="title">Conectando con la AFIP....</span></div>
     <footer id="app-footer" class="footer">
       <div class="content has-text-centered">
-        <p><strong>Croessant</strong> hecho por Lucas Lobasso.</p>
-        <p>Código open-source disponible en <a href="https://github.com/lucaslobasso/afip_invoicer" target="_blank">Github</a>.</p>
+        <p><strong>Facturas CDDL</strong> desarrollo por Brian Jones.</p>
+        <p><a href="https://mentalroots.com" target="_blank">mEntalRoots</a>.</p>
       </div>
     </footer>
   </body>

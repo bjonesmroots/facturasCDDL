@@ -1,8 +1,8 @@
 {
-  "name": "Croessant",
-  "productName": "Croessant",
-  "version": "2.0.0",
-  "description": "Un simple facturador de la AFIP para generar facturas C a consumidor final.",
+  "name": "FacturasCDDL",
+  "productName": "FacturasCDDL",
+  "version": "1.0.0",
+  "description": "Un simple facturador de la AFIP con dulce de leche",
   "main": "src/app.js",
   "scripts": {
     "css-start": "node-sass --omit-source-map-url src/scss/main.scss src/css/main.css",
@@ -16,14 +16,14 @@
   },
   "keywords": [],
   "author": {
-    "name": "Lucas Lobasso",
-    "email": "lobassolucas@gmail.com"
+    "name": "Brian Jones",
+    "email": "bjones@mroots.com.ar"
   },
   "license": "MIT",
   "config": {
     "forge": {
       "packagerConfig": {
-        "executableName": "Croessant",
+        "executableName": "FacturasCDDL",
         "icon": "./assets/icon"
       },
       "makers": [
@@ -79,6 +79,7 @@
     "@electron-forge/publisher-github": "^6.0.0-beta.57",
     "bulma": "^0.9.3",
     "electron": "13.1.2",
+    "electron-reloader": "^1.2.1",
     "node-sass": "^6.0.1",
     "npm-run-all": "^4.1.5"
   }

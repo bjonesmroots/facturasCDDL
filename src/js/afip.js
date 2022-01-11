@@ -1,9 +1,8 @@
 const Afip          = require('@afipsdk/afip.js');
 const activeWindow  = electron.getCurrentWindow();
 const tempPath      = electron.app.getPath("temp");
-const invoiceType   = 11 // Factura C
 let afip, lastInvoiceNumber, lastInvoiceDate;
-
+const production = false;
 async function initAfip() {
     afip = await getAfipUser();
 
@@ -27,21 +26,40 @@ async function initAfip() {
 async function getAfipUser() {
     let cuit = await getCuit(),
         data = new Afip({ 
-            CUIT      : cuit, 
-            res_folder: assestPath,
-            ta_folder : tempPath,
-            cert      : "cert.crt", 
-            key       : "key.key",
-            production: true
-        });
+        CUIT      : cuit, 
+        res_folder: assestPath,
+        ta_folder : tempPath,
+        cert      : "cert.crt", 
+        key       : "key.key",
+        production: production
+    });
 
     return cuit ? data : null;
 }
 
+async function getContribuyente(cuit) {
+    try {
+        let response = await afip.RegisterScopeFive.getTaxpayerDetails(parseInt(cuit));
+      
+        return response;
+    } 
+    catch (e) {
+        errorMessage(e);
+    }
+
+    return false;
+}
+
 async function getPointsOfSale() {
     try {
-        let input  = $("#pointOfSale"),
-            points = await afip.ElectronicBilling.getSalesPoints();
+        let input  = $("#pointOfSale");
+        let points = [{
+            'Nro':1,
+            'EmisionTipo':'TEST'
+        }];
+        if (production) {
+            let points = await afip.ElectronicBilling.getSalesPoints();
+        }
             
         if (input.length && points && points.length) {
             points.forEach(point => {
@@ -68,7 +86,7 @@ async function getPointsOfSale() {
 async function getLastInvoice() {
     try {
         let pointOfSale = $("#pointOfSale").val();
-        return await afip.ElectronicBilling.getLastVoucher(pointOfSale, invoiceType);
+        return await afip.ElectronicBilling.getLastVoucher(pointOfSale, $("#invoiceType").val());
     } 
     catch (e) {
         errorMessage(e);
@@ -79,7 +97,7 @@ async function getLastInvoice() {
 async function getInvoiceInfo(invoice) {
     try {
         let pointOfSale = $("#pointOfSale").val();
-        return await afip.ElectronicBilling.getVoucherInfo(invoice, pointOfSale, invoiceType);
+        return await afip.ElectronicBilling.getVoucherInfo(invoice, pointOfSale, $("#invoiceType").val());
     } 
     catch (e) {
         errorMessage(e);
@@ -99,7 +117,7 @@ async function getInvoicesListInfo(dateFrom, dateTo) {
             data;
             
         for (let i = 0; i < inRange.length; i++) {
-            data = await afip.ElectronicBilling.getVoucherInfo(inRange[i], POS, invoiceType);
+            data = await afip.ElectronicBilling.getVoucherInfo(inRange[i], POS, $("#invoiceType").val());
             invoicesList.push(data);
         }
     } 
@@ -131,7 +149,8 @@ async function generateAfipInvoice() {
     try {
         let lastInvoice = await getLastInvoice(),
             invoiceData = await getInvoiceData(lastInvoice);
-        
+        console.log(lastInvoice);
+        console.log(invoiceData);
         await afip.ElectronicBilling.createVoucher(invoiceData).then((data, err) => {
             if (err) {
                 errorMessage("Se produjo un error al generar la factura.");
@@ -149,14 +168,14 @@ async function getInvoiceData(lastInvoice) {
     let concept     = $("#concept").val(),
         pointOfSale = $("#pointOfSale").val(),
         date        = $("#date").val(),
-        amount      = $("#amount").val(),
+        amount      = getInvoiceAmount(),
         dateParsed  = serializeInvoiceDate(date),
         serviceDate = parseInt(concept) > 1 ? dateParsed : null,
         currVoucher = lastInvoice + 1,
         invoiceData = {
             'CantReg' 		: 1,            // Cantidad de comprobantes a registrar
             'PtoVta' 		: pointOfSale,  // Punto de venta
-            'CbteTipo' 		: invoiceType,  // Tipo de comprobante (11 Factura C)
+            'CbteTipo' 		: $("#invoiceType").val(),  // Tipo de comprobante (11 Factura C)
             'Concepto' 		: concept,      // Concepto del Comprobante: (1) Productos, (2) Servicios, (3) Productos y Servicios
             'DocTipo' 		: 99,           // Tipo de documento del comprador (99 consumidor final)
             'DocNro' 		: 0,            // Número de documento del comprador (0 consumidor final)
@@ -175,8 +194,24 @@ async function getInvoiceData(lastInvoice) {
             'MonId' 		: 'PES',        // Tipo de moneda usada en el comprobante ('PES' para pesos argentinos) 
             'MonCotiz' 		: 1,            // Cotización de la moneda usada (1 para pesos argentinos)  
         };
-
+        if (['3','8','13'].indexOf($("#invoiceType").val()) != -1) {
+            invoiceData.CbtesAsoc = {
+                'Tipo': $("#invoiceType").val() == 3 ? 1 : ($("#invoiceType").val() == 8 ? 6 : 11),
+                'PtoVta': pointOfSale,
+                'Nro': 1,
+            };
+        }
     return invoiceData;
+}
+
+function getInvoiceAmount() {
+    let amount = 0;
+    $(".amount").each(function (index) {
+        let value  = $(this).val();
+        amount += parseFloat(value);
+    });
+
+    return amount;
 }
 
 function serializeInvoiceDate(date) {
