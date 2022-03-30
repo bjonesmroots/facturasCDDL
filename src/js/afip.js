@@ -57,8 +57,12 @@ async function getPointsOfSale() {
             'Nro':1,
             'EmisionTipo':'TEST'
         }];
+        let pointsAfip = [];
         if (production) {
-            let points = await afip.ElectronicBilling.getSalesPoints();
+            pointsAfip = await afip.ElectronicBilling.getSalesPoints();
+            if (pointsAfip) {
+                points = pointsAfip;
+            }
         }
             
         if (input.length && points && points.length) {
@@ -86,7 +90,11 @@ async function getPointsOfSale() {
 async function getLastInvoice() {
     try {
         let pointOfSale = $("#pointOfSale").val();
-        return await afip.ElectronicBilling.getLastVoucher(pointOfSale, $("#invoiceType").val());
+        if (pointOfSale) {
+            return await afip.ElectronicBilling.getLastVoucher(pointOfSale, $("#invoiceType").val());
+        } else {
+            return null;
+        }
     } 
     catch (e) {
         errorMessage(e);
@@ -130,10 +138,12 @@ async function getInvoicesListInfo(dateFrom, dateTo) {
 
 async function getLastInvoiceDate() {
     try {
-        let invoice = await getLastInvoice(),
-            info    = await getInvoiceInfo(invoice);
-
-        return parseInvoiceDate(info.CbteFch);
+        let invoice = await getLastInvoice();
+        if (invoice) {
+            let info = await getInvoiceInfo(invoice);
+            return parseInvoiceDate(info.CbteFch);
+        }
+        return null;
     } 
     catch (e) {
         errorMessage(e);
@@ -155,8 +165,7 @@ async function generateAfipInvoice() {
             if (err) {
                 errorMessage("Se produjo un error al generar la factura.");
                 return;
-            }
-            
+            }            
             invoiceGenerated(lastInvoice + 1, invoiceData.CbteFch);
         });
     } catch (e) {
@@ -327,6 +336,8 @@ function invoiceGenerated(invoiceNumber, invoiceDate) {
     updateLastInvoice(invoiceNumber, invoiceDate);
     submitSpinner(btn, fields, false);
     successMessage(`Comprobante nº ${invoiceNumber} generado correctamente.`);
+    updateDatePicker();
+    limpiarDetalles();
 }
 
 async function updateLastInvoice(number, date) {

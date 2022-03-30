@@ -1,0 +1,8 @@
+.viewer {
+    overflow: scroll;
+    text-align: center;
+    margin: 0 auto;
+}
+.no-footer-section {
+    max-height: calc(100% - 120px)!important;
+}

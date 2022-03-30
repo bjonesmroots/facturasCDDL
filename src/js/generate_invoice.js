@@ -5,6 +5,7 @@ $(document).ready(async function() {
 
     submitSpinner(btn, fields);
     await initAfipConnection();
+    filtrarTiposFactura();
     bindDatePicker();
     updateDatePicker().setDate(new Date(Date.now()));
     submitSpinner(btn, fields, false);
@@ -12,6 +13,23 @@ $(document).ready(async function() {
     tipoDocumento.on("change", function() {
         handleTipoDocumento(tipoDocumento);
     });
+    initAmountHandlers();
+    $('#cuit').on('keypress',function(e) {
+        if(e.which == 13 && ['80','86'].indexOf(tipoDocumento.val()) != -1) {
+           consultarCuit();
+        }
+    });
+});
+
+async function filtrarTiposFactura() {
+    if (datosContribuyenteFacturador.datosRegimenGeneral) {
+        $('#invoiceType').html('<option selected value="1">Factura A</option><option value="6">Factura B</option><option value="3">Nota Credito A</option><option value="8">Nota Credito B</option>');
+    } else if (datosContribuyenteFacturador.datosMonotributo) {
+        $('#invoiceType').html('<option selected value="11">Factura C</option><option value="13">Nota Credito C</option>');
+    }
+}
+
+function initAmountHandlers() {
     $('.amount').on("change", function() {
         handleAmount(this);
     });
@@ -21,12 +39,7 @@ $(document).ready(async function() {
         let amount = $(item).find('.amount');
         handleAmount(amount);
     });
-    $('#cuit').on('keypress',function(e) {
-        if(e.which == 13 && ['80','86'].indexOf(tipoDocumento.val()) != -1) {
-           consultarCuit();
-        }
-    });
-});
+}
 
 function consultarCuit() {
     let input  = $("#cuit");
@@ -37,11 +50,24 @@ function consultarCuit() {
             } else {
                 $('#razonSocial').val(contribuyente.datosGenerales.razonSocial);
             }
+            if (contribuyente.datosRegimenGeneral) {
+                $('#condicionIva').val(11);
+            } else if (contribuyente.datosMonotributo) {
+                $('#condicionIva').val(6);
+            } else {
+                $('#condicionIva').val(0);
+            }
+            if (datosContribuyenteFacturador.datosRegimenGeneral && $('#condicionIva').val() == 11) {
+                $('#invoiceType').val(1);
+            } else if (datosContribuyenteFacturador.datosRegimenGeneral && $('#condicionIva').val() != 11) {
+                $('#invoiceType').val(6);
+            } else if (!datosContribuyenteFacturador.datosRegimenGeneral) {
+                $('#invoiceType').val(11);
+            }
         } else {
-            alert("No existe el cuit indicado");
+            errorMessage("No existe el cuit indicado");
         }
-    });
-   
+    });   
 }
 
 function handleAmount(input) {
@@ -56,6 +82,11 @@ function handleAmount(input) {
 function handleTipoDocumento() {
     if ($(tipoDocumento).val() == 99) {
         $('#cuit').attr('disabled','disabled');
+        $('#cuit').val('');
+        if (datosContribuyenteFacturador.datosRegimenGeneral) {
+            $('#invoiceType').val(6);
+            $('#condicionIva').val(0);
+        }
     } else {
         $('#lblCuit').text($('#tipoDocumento option:selected').text());
         $('#cuit').removeAttr('disabled');
@@ -68,7 +99,6 @@ async function generateInvoice(elem) {
 
     if (!submitSpinner(btn, fields) && validateForm()) {
         await generateAfipInvoice();
-        updateDatePicker();
     }
 
     submitSpinner(btn, fields, false);
@@ -76,8 +106,14 @@ async function generateInvoice(elem) {
 
 function agregarDetalle() {
     $("#detalle").append('<div class="field is-grouped item">'+$($(".item")[0]).html()+'</div>');
+    initAmountHandlers();
 }
 
+function limpiarDetalles() {
+    let detalle = '<div class="field is-grouped item">'+$($(".item")[0]).html()+'</div>';
+    $("#detalle").html(detalle);
+    initAmountHandlers();
+}
 
 function bindDatePicker() {
     let concept     = $("#concept"),

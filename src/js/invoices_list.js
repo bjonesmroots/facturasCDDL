@@ -39,6 +39,7 @@ async function searchInvoices(elem) {
         fields = $("#filter-fields");
 
     if (!submitSpinner(btn, fields) && validateDatePicker(2)) {
+        await updateLastInvoice();
         await searchAfipInvoices();
     }
 
@@ -91,3 +92,13 @@ async function searchAfipInvoices() {
 
     spinner.removeClass("is-active");
 }
+
+function createViewInvoiceWindow(elem) {
+    let btn = $(elem);
+
+    if (!submitSpinner(btn)) {
+        activeWindow.loadFile(path.join(__dirname, 'invoice_viewer.html'));
+    }
+    
+    submitSpinner(btn, null, false);
+  };

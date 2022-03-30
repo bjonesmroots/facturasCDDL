@@ -8,7 +8,7 @@ function retryConnection(elem) {
         activeWindow.loadFile(path.join(viewsPath, 'generate_invoice.html'));
     }
     
-    submitSpinner(btn, false);
+    submitSpinner(btn, null, false);
 }
 
 function retryConfiguration(elem) {
@@ -18,5 +18,5 @@ function retryConfiguration(elem) {
         activeWindow.loadFile(path.join(viewsPath, 'configurate.html'));
     }
     
-    submitSpinner(btn, false);
+    submitSpinner(btn, null, false);
 }

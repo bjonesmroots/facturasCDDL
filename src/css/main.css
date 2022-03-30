@@ -10140,7 +10140,7 @@ html {
     html body section.hero .hero-head .buttons.are-small .button:not(.is-normal):not(.is-medium):not(.is-large) {
       font-size: 0.85em; }
     html body section.hero .hero-head + .hero-body {
-      padding: 20px 20px 50px 20px; }
+      padding: 5px 20px 20px 20px; }
     html body section.hero .hero-body .title {
       color: white; }
     html body section.section {
@@ -10158,10 +10158,13 @@ html {
     html body #invoices-list-container {
       border-top: 1px solid #eaeaea;
       padding-top: 20px;
-      max-height: calc(100% - 200px); }
+      max-height: calc(100% - 125px); }
       html body #invoices-list-container #invoices-list {
         max-height: 100%;
         overflow-y: auto; }
+        html body #invoices-list-container #invoices-list .invoice-list-item {
+          cursor: pointer;
+        }
         html body #invoices-list-container #invoices-list .invoice-list-item:not([id]) > .tile {
           padding: 0;
           overflow: hidden; }
@@ -10180,7 +10183,7 @@ html {
           margin-bottom: 10px; }
     html body #invoices-total {
       position: absolute;
-      bottom: 115px;
+      bottom: 195px;
       left: 0;
       width: 100%;
       color: white;

@@ -53,25 +53,38 @@
     </section>
     <section id="app-body" class="section is-flex is-flex-direction-column is-flex-grow-1 contains-list">
         <fieldset id="filter-fields">
-          <div class="field">
-            <label class="label">Fecha</label>
-            <div id="range" class="field has-addons">
-              <div class="control is-expanded">
-                <input name="start" class="input datepicker-input" type="text">
-              </div>
-              <div class="control">
-                <a class="button is-static">a</a>
-              </div>
-              <div class="control is-expanded">
-                <input name="end" class="input datepicker-input" type="text">
-              </div>
-            </div>
-          </div>
           <div class="field is-grouped">
             <div class="field is-expanded">
               <label class="label">Punto de venta</label>
               <div class="select">
                 <select id="pointOfSale"></select>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Fecha</label>
+              <div id="range" class="field has-addons">
+                <div class="control is-expanded">
+                  <input name="start" class="input datepicker-input" type="text">
+                </div>
+                <div class="control">
+                  <a class="button is-static">a</a>
+                </div>
+                <div class="control is-expanded">
+                  <input name="end" class="input datepicker-input" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Tipo Comprobante</label>
+              <div class="select">
+                <select id="invoiceType" data-val="2">
+                  <option selected value="1">Factura A</option>
+                  <option value="6">Factura B</option>
+                  <option value="11">Factura C</option>
+                  <option value="3">Nota Credito A</option>
+                  <option value="8">Nota Credito B</option>
+                  <option value="13">Nota Credito C</option>
+                </select>
               </div>
             </div>
             <div class="field is-flex is-align-items-flex-end">
@@ -83,7 +96,7 @@
         </fieldset>
         <div id="invoices-list-container" class="is-flex-grow-1">
           <ul id="invoices-list">
-            <li id="invoice-list-item-template" class="invoice-list-item is-hidden">
+            <li id="invoice-list-item-template" class="invoice-list-item is-hidden" onclick="createViewInvoiceWindow(this);">
               <div class="tile is-child notification is-flex">
                 <span class="invoice-number"></span>
                 <span class="invoice-body is-flex is-flex-direction-column">

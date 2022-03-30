@@ -77,19 +77,6 @@
                 </select>
               </div>
             </div>
-            <div class="field">
-              <label class="label">Tipo Comprobante</label>
-              <div class="select">
-                <select id="invoiceType" data-val="2">
-                  <option selected value="1">Factura A</option>
-                  <option value="6">Factura B</option>
-                  <option value="11">Factura C</option>
-                  <option value="3">Nota Credito A</option>
-                  <option value="8">Nota Credito B</option>
-                  <option value="13">Nota Credito C</option>
-                </select>
-              </div>
-            </div>
           </div>
           <div class="field is-grouped">
             <div class="field">
@@ -125,6 +112,19 @@
                 </select>
               </div>
             </div>
+            <div class="field">
+              <label class="label">Tipo Comprobante</label>
+              <div class="select">
+                <select id="invoiceType" data-val="2">
+                  <option selected value="1">Factura A</option>
+                  <option value="6">Factura B</option>
+                  <option value="11">Factura C</option>
+                  <option value="3">Nota Credito A</option>
+                  <option value="8">Nota Credito B</option>
+                  <option value="13">Nota Credito C</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div id="detalle">
             <div class="field is-grouped item">
@@ -134,10 +134,10 @@
                     <input class="input codigo">
                 </div>
               </div>
-              <div class="field">
+              <div class="field is-expanded">
                 <label class="label">Detalle</label>
                 <div class="control">
-                    <input class="input detalle">
+                    <textarea class="input detalle"></textarea>
                 </div>
               </div>
               <div class="field">
@@ -160,13 +160,13 @@
                 <div class="control">
                     <input class="input amount" type="number">
                 </div>
-                <p class="help is-danger is-hidden">Debe ser mayor a 0 y menor a 7500.</p>
               </div>
             </div>
           </div>
           <button id="agregarDetalle" class="button is-normal is-info is-fullwidth mt-3" onclick="agregarDetalle();" type="button">Agregar Detalle</button>
         </fieldset>
         <button id="generateInvoice" class="button is-medium is-success is-loading is-fullwidth" onclick="generateInvoice(this);" type="button">Generar</button>
+        <button id="limpiarDetalles" class="button is-normal is-warning is-fullwidth mt-3" onclick="limpiarDetalles();" type="button">Limpiar</button>
     </section>
     <div id="page-loader" class="pageloader is-bottom-to-top is-active"><span class="title">Conectando con la AFIP....</span></div>
     <footer id="app-footer" class="footer">

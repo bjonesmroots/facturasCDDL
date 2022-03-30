@@ -16,10 +16,11 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 }
 
 const createWindow = async () => {
+  process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
   // Create the browser window.
   console.log('createWindow');
   const mainWindow = new BrowserWindow({
-    width: 1024,
+    width: 1280,
     height: 900,
     icon: path.join(app.getAppPath(), "assets/icon.png"),
     webPreferences: {

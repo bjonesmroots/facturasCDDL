@@ -2,9 +2,8 @@ const { promises: fs, constants } = require('fs');
 const electron   = require('@electron/remote');
 const path       = require('path');
 const assestPath = electron.app.getPath("userData");
-
+let datosContribuyenteFacturador = null;
 window.$ = window.jQuery = require('jquery');
-console.log('main.js');
 bulmaToast.setDefaults({
     type: 'is-danger',
     duration: 3000,
@@ -20,6 +19,21 @@ async function initAfipConnection() {
     spinner.addClass("is-active");
     await initAfip();
     spinner.removeClass("is-active");
+    await setDatosContribuyenteFacturador();
+}
+
+async function setDatosContribuyenteFacturador() {
+    if (!datosContribuyenteFacturador) {
+        let cuitContribuyente = await getCuit();
+        if (!production) {
+            cuitContribuyente = '30000000007'
+        }
+        await getContribuyente(cuitContribuyente).then(contribuyente => {
+            if (contribuyente && contribuyente.datosGenerales) {
+                datosContribuyenteFacturador = contribuyente;
+            }
+        });
+    }
 }
 
 function loadPointsOfSale() {
@@ -44,7 +58,7 @@ function successMessage(msg) {
 }
 
 function errorMessage(msg) {
-    bulmaToast.toast({ message: msg.toString() });
+    bulmaToast.toast({ message: msg.toString(),  duration: 4000,});
     console.log(msg);
 }
 
@@ -52,10 +66,12 @@ function infoMessage(msg) {
     bulmaToast.toast({ message: msg.toString(), type: 'is-info' });
 }
 
-function submitSpinner(btn, fields, loading = true) {
+function submitSpinner(btn, fields = null, loading = true) {
     if (loading) {
         if (btn.hasClass("is-loading")) {
-            fields.attr("disabled", "");
+            if (fields) {
+                fields.attr("disabled", "");
+            }
             return true;
         }
 
@@ -91,7 +107,7 @@ function loadGenerateInvoiceView(elem) {
         activeWindow.loadFile(path.join(__dirname, 'generate_invoice.html'));
     }
     
-    submitSpinner(btn, false);
+    submitSpinner(btn, null, false);
 }
 
 function loadConfigurationView(elem) {
@@ -101,7 +117,7 @@ function loadConfigurationView(elem) {
         activeWindow.loadFile(path.join(__dirname, 'configurate.html'));
     }
     
-    submitSpinner(btn, false);
+    submitSpinner(btn, null, false);
 }
 
 function invalidInput(input, invalid = true) {
