@@ -167,18 +167,24 @@ async function generateAfipInvoice() {
 async function getInvoiceData(lastInvoice) {
     let concept     = $("#concept").val(),
         pointOfSale = $("#pointOfSale").val(),
+        cbteTipo    = $("#invoiceType").val(),
+        docTipo     = $("#tipoDocumento").val(),
+        docNro      = $("#cuit").val(),
         date        = $("#date").val(),
-        amount      = getInvoiceAmount(),
+        amount      = getInvoiceAmount(cbteTipo),
+        neto        = getInvoiceNeto(cbteTipo),
+        impIva      = getInvoiceIVA(cbteTipo),
         dateParsed  = serializeInvoiceDate(date),
         serviceDate = parseInt(concept) > 1 ? dateParsed : null,
         currVoucher = lastInvoice + 1,
+        iva         = getInvoiceIVAOBJ(cbteTipo)
         invoiceData = {
             'CantReg' 		: 1,            // Cantidad de comprobantes a registrar
             'PtoVta' 		: pointOfSale,  // Punto de venta
-            'CbteTipo' 		: $("#invoiceType").val(),  // Tipo de comprobante (11 Factura C)
+            'CbteTipo' 		: cbteTipo,     // Tipo de comprobante (11 Factura C)
             'Concepto' 		: concept,      // Concepto del Comprobante: (1) Productos, (2) Servicios, (3) Productos y Servicios
-            'DocTipo' 		: 99,           // Tipo de documento del comprador (99 consumidor final)
-            'DocNro' 		: 0,            // Número de documento del comprador (0 consumidor final)
+            'DocTipo' 		: docTipo,      // Tipo de documento del comprador (99 consumidor final)
+            'DocNro' 		: docNro,       // Número de documento del comprador (0 consumidor final)
             'CbteDesde' 	: currVoucher,  // Numero de comprobante o numero del primer comprobante en caso de ser mas de uno
             'CbteHasta' 	: currVoucher,  // Numero de comprobante o numero del ultimo comprobante en caso de ser mas de uno
             'CbteFch' 		: dateParsed,   // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
@@ -187,16 +193,17 @@ async function getInvoiceData(lastInvoice) {
             'FchVtoPago' 	: serviceDate,  // (Opcional) Fecha de vencimiento del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
             'ImpTotal' 		: amount,       // Importe total del comprobante
             'ImpTotConc' 	: 0,            // Importe neto no gravado
-            'ImpNeto' 		: amount,       // Importe neto gravado
+            'ImpNeto' 		: neto,       // Importe neto gravado
             'ImpOpEx' 		: 0,            // Importe exento de IVA
-            'ImpIVA' 		: 0,            // Importe total de IVA
+            'ImpIVA' 		: impIva,          // Importe total de IVA
+            'Iva' 		    : iva,          // Importe total de IVA
             'ImpTrib' 		: 0,            // Importe total de tributos
             'MonId' 		: 'PES',        // Tipo de moneda usada en el comprobante ('PES' para pesos argentinos) 
             'MonCotiz' 		: 1,            // Cotización de la moneda usada (1 para pesos argentinos)  
         };
-        if (['3','8','13'].indexOf($("#invoiceType").val()) != -1) {
+        if (['3','8','13'].indexOf(cbteTipo) != -1) {
             invoiceData.CbtesAsoc = {
-                'Tipo': $("#invoiceType").val() == 3 ? 1 : ($("#invoiceType").val() == 8 ? 6 : 11),
+                'Tipo': cbteTipo == 3 ? 1 : (cbteTipo == 8 ? 6 : 11),
                 'PtoVta': pointOfSale,
                 'Nro': 1,
             };
@@ -204,7 +211,7 @@ async function getInvoiceData(lastInvoice) {
     return invoiceData;
 }
 
-function getInvoiceAmount() {
+function getInvoiceAmount(cbteTipo) {
     let amount = 0;
     $(".amount").each(function (index) {
         let value  = $(this).val();
@@ -212,6 +219,76 @@ function getInvoiceAmount() {
     });
 
     return amount;
+}
+
+function getInvoiceNeto(cbteTipo) {
+    let amount = 0;
+    if (['11','13'].includes(cbteTipo)) {
+        $(".amount").each(function (index) {
+            let value  = $(this).val();
+            amount += parseFloat(value);
+        });
+    } else {
+        $(".neto").each(function (index) {
+            let value  = $(this).val();
+            amount += parseFloat(value);
+        });
+    }
+
+    return amount;
+}
+
+function getInvoiceIVA(cbteTipo) {
+    if (['11','13'].includes(cbteTipo)) {
+        return 0;
+    }
+    let iva = 0;
+    $(".amount").each(function (index) {
+        iva += calculateIVA(this);
+    });
+
+    return iva.toFixed(2);
+}
+
+function getInvoiceIVAOBJ(cbteTipo) {
+    if (['11','13'].includes(cbteTipo)) {
+        return {};
+    }
+    let iva21 = calculateIVAOBJ('21');
+    let iva105 = calculateIVAOBJ('10.5');
+
+    return iva21.concat(iva105)
+}
+
+function calculateIVA(input) {
+    let item = $(input).closest('.item');
+    let iva = $(item).find('.iva');
+    let neto = $(item).find('.neto');
+    let amount = parseFloat($(input).val());
+    let netoVal = amount / ((1+(parseFloat($(iva).val()))/100));
+    return amount - netoVal;
+}
+
+function calculateIVAOBJ(ivaVal) {
+    let amount = 0;
+    let netoVal = 0;
+    $(".amount").each(function (index) {
+        let item = $(this).closest('.item');
+        let iva = $(item).find('.iva');
+        if ($(iva).val() == ivaVal) {
+            amount += parseFloat($(this).val());
+            netoVal += amount / ((1+(parseFloat($(iva).val()))/100));
+        }
+    });
+    if (amount != 0) {
+        return [{
+            'Id':ivaVal == '10.5' ? '4' : '5',
+            'BaseImp': netoVal.toFixed(2),
+            'Importe': (amount - netoVal).toFixed(2),
+        }];
+    } else {
+        return [];
+    }
 }
 
 function serializeInvoiceDate(date) {

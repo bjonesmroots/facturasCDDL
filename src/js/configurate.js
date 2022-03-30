@@ -80,7 +80,6 @@ function uploadFile(filePath, fileName) {
     let submitBtn = $("#submitConfig");
 
     submitBtn.addClass("is-loading");
-    
     fs.copyFile(filePath, path.join(assestPath, fileName)).then((_, err) => {
         if (err) {
             errorMessage("Se produjo un error al subir el/los archivo/s.");
