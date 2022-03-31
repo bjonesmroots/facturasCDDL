@@ -1,4 +1,3 @@
-
 $(document).ready(async function() {
     let btn    = $("#loadMore"),
         fields = $("#invoice-fields");
@@ -96,7 +95,7 @@ async function searchAfipInvoices() {
 
 function createViewInvoiceWindow(elem) {
     let btn = $(elem);
-    selectedCae = $($(elem).find('.invoice-cae')).text();
+    localStorage.setItem('selectedCae', $($(elem).find('.invoice-cae')).text());
     if (!submitSpinner(btn)) {
         activeWindow.loadFile(path.join(__dirname, 'invoice_viewer.html'));
     }

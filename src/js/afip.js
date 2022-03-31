@@ -1,7 +1,7 @@
 const Afip          = require('@afipsdk/afip.js');
 const activeWindow  = electron.getCurrentWindow();
 const tempPath      = electron.app.getPath("temp");
-let afip, lastInvoiceNumber, lastInvoiceDate;
+let afip, lastInvoiceNumber, lastInvoiceDate, cliente;
 const production = false;
 async function initAfip() {
     afip = await getAfipUser();
@@ -166,7 +166,7 @@ async function generateAfipInvoice() {
                 errorMessage("Se produjo un error al generar la factura.");
                 return;
             }
-            insertarComprobante(data.CAE, JSON.stringify(invoiceData), JSON.stringify(getInvoiceDetails()));
+            insertarComprobante(data.CAE, JSON.stringify(cliente), JSON.stringify(invoiceData), JSON.stringify(getInvoiceDetails()));
             invoiceGenerated(lastInvoice + 1, invoiceData.CbteFch);
         });
     } catch (e) {

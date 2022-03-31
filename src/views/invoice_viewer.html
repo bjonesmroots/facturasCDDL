@@ -18,6 +18,7 @@
 
     <script defer src="../js/main.js"></script>
     <script defer src="../js/afip.js"></script>
+    <script defer src="../js/db.js"></script>
     <script defer src="../js/invoice_viewer.js"></script>
   </head>
   <body class="is-flex is-flex-direction-column">
@@ -34,9 +35,12 @@
             <div class="navbar-end">
               <div class="navbar-item">
                 <div class="buttons are-small">
-					<div class="button is-primary is-rounded has-tooltip-primary has-tooltip-left" onclick="loadInvoicesListView(this);" data-tooltip="Consulta de comprobantes">
-						<i class="fas fa-list"></i>
-					</div>
+                  <div class="button is-primary is-rounded has-tooltip-primary has-tooltip-left" onclick="loadInvoicesListView(this);" data-tooltip="Consulta de comprobantes">
+                    <i class="fas fa-list"></i>
+                  </div>
+                  <div class="button is-primary is-rounded has-tooltip-primary has-tooltip-left" onclick="print(this);" data-tooltip="Imprimir">
+                    <i class="fas fa-print"></i>
+                  </div>
                 </div>
               </div>
             </div>

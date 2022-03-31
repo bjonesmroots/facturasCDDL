@@ -45,6 +45,7 @@ function consultarCuit() {
     let input  = $("#cuit");
      getContribuyente(input.val()).then(contribuyente => {
         if (contribuyente && contribuyente.datosGenerales) {
+            cliente = contribuyente;
             if (contribuyente.datosGenerales.tipoPersona == 'FISICA') {
                 $('#razonSocial').val(contribuyente.datosGenerales.nombre + ' ' + contribuyente.datosGenerales.apellido);
             } else {

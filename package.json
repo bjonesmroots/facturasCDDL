@@ -66,11 +66,11 @@
     "@creativebulma/bulma-tooltip": "^1.2.0",
     "@electron/remote": "^1.2.0",
     "@fortawesome/fontawesome-free": "^5.15.3",
+    "better-sqlite3": "^7.5.0",
     "bulma-pageloader": "^0.3.0",
     "bulma-toast": "^2.3.1",
     "electron-squirrel-startup": "^1.0.0",
-    "jquery": "^3.6.0",
-    "sqlite3": "^5.0.2"
+    "jquery": "^3.6.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.57",

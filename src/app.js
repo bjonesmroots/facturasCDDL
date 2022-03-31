@@ -1,10 +1,9 @@
-const { app, shell, BrowserWindow } = require('electron');
+const { app, shell, BrowserWindow, ipcMain } = require('electron');
 const { promises: fs, constants }   = require('fs');
 const path                          = require('path');
 const assestPath                    = app.getPath("userData");
 const viewsPath                     = path.join(__dirname, 'views');
 
-let selectedCae = null;
 require('@electron/remote/main').initialize();
 
 try {
@@ -66,6 +65,20 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+ipcMain.on('exportSelectionToPDF', (event, content, cae) => {
+
+  let workerWindow = new BrowserWindow();
+  const fsPromises = require('fs').promises;
+  fsPromises.writeFile(path.join(assestPath, cae + ".html"), 'data:text/html;charset=utf-8,<html>' + content + '</html>')
+  .then(() => {
+    workerWindow.loadFile(assestPath, cae + ".html");
+    workerWindow.webContents.print();
+  })
+  .catch(err => {
+    let asd = err;
+  });
 });
 
 async function configurated() {

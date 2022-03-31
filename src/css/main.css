@@ -10176,6 +10176,8 @@ html {
             padding: 10px 15px; }
           html body #invoices-list-container #invoices-list .invoice-list-item:not([id]) > .tile .invoice-amount {
             padding: 15px 20px; }
+          html body #invoices-list-container #invoices-list .invoice-list-item:not([id]) > .tile .invoice-cae {
+            padding: 15px 50px; }
         html body #invoices-list-container #invoices-list .invoice-list-item:not(:last-child) {
           margin-bottom: 10px; }
     html body #invoices-total {
