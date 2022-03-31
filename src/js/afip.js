@@ -166,7 +166,7 @@ async function generateAfipInvoice() {
                 errorMessage("Se produjo un error al generar la factura.");
                 return;
             }
-            insertarComprobante(data.CAE, JSON.stringify(cliente), JSON.stringify(invoiceData), JSON.stringify(getInvoiceDetails()));
+            insertarComprobante(data.CAE, JSON.stringify(cliente), JSON.stringify(invoiceData), JSON.stringify(getInvoiceDetails()), data.CAEFchVto);
             invoiceGenerated(lastInvoice + 1, invoiceData.CbteFch);
         });
     } catch (e) {
