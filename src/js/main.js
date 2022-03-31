@@ -3,6 +3,7 @@ const electron   = require('@electron/remote');
 const path       = require('path');
 const assestPath = electron.app.getPath("userData");
 let datosContribuyenteFacturador = null;
+
 window.$ = window.jQuery = require('jquery');
 bulmaToast.setDefaults({
     type: 'is-danger',

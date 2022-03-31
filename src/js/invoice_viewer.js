@@ -1,5 +1,6 @@
 $(document).ready(async function() {
     await initAfipConnection();
-    let cuit = datosContribuyenteFacturador;
+    let datos = datosContribuyenteFacturador;
+    let comprobante = consultarCae(selectedCae);    
     $("#viewer").load(path.join(__dirname, 'invoice.html'));
 });

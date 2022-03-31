@@ -16,6 +16,7 @@
 
     <script defer src="../js/main.js"></script>
     <script defer src="../js/afip.js"></script>
+    <script defer src="../js/db.js"></script>
     <script defer src="../js/generate_invoice.js"></script>
   </head>
   <body class="is-flex is-flex-direction-column">
@@ -127,7 +128,7 @@
             </div>
           </div>
           <div id="detalle">
-            <div class="field is-grouped item">
+            <div class="field is-grouped detalle-item">
               <div class="field">
                 <label class="label">Codigo</label>
                 <div class="control">
@@ -144,8 +145,10 @@
                 <label class="label">I.V.A.</label>
                 <div class="select">
                   <select class="iva" data-val="2">
+                    <option value="27">27%</option>
                     <option selected value="21">21%</option>
                     <option value="10.5">10.5%</option>
+                    <option value="0">0%</option>
                   </select>
                 </div>
               </div>

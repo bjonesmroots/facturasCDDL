@@ -2,7 +2,7 @@ $(document).ready(async function() {
     let btn    = $("#generateInvoice"),
         fields = $("#invoice-fields"),
         tipoDocumento = $('#tipoDocumento');
-
+    createTable();
     submitSpinner(btn, fields);
     await initAfipConnection();
     filtrarTiposFactura();
@@ -35,7 +35,7 @@ function initAmountHandlers() {
     });
     
     $('.iva').on("change", function() {
-        let item = $(this).closest('.item');
+        let item = $(this).closest('.detalle-item');
         let amount = $(item).find('.amount');
         handleAmount(amount);
     });
@@ -71,7 +71,7 @@ function consultarCuit() {
 }
 
 function handleAmount(input) {
-    let item = $(input).closest('.item');
+    let item = $(input).closest('.detalle-item');
     let iva = $(item).find('.iva');
     let neto = $(item).find('.neto');
     let amount = parseFloat($(input).val());
@@ -105,12 +105,12 @@ async function generateInvoice(elem) {
 }
 
 function agregarDetalle() {
-    $("#detalle").append('<div class="field is-grouped item">'+$($(".item")[0]).html()+'</div>');
+    $("#detalle").append('<div class="field is-grouped detalle-item">'+$($(".detalle-item")[0]).html()+'</div>');
     initAmountHandlers();
 }
 
 function limpiarDetalles() {
-    let detalle = '<div class="field is-grouped item">'+$($(".item")[0]).html()+'</div>';
+    let detalle = '<div class="field is-grouped detalle-item">'+$($(".detalle-item")[0]).html()+'</div>';
     $("#detalle").html(detalle);
     initAmountHandlers();
 }

@@ -162,15 +162,30 @@ async function generateAfipInvoice() {
         console.log(lastInvoice);
         console.log(invoiceData);
         await afip.ElectronicBilling.createVoucher(invoiceData).then((data, err) => {
-            if (err) {
+            if (err || !data.CAE) {
                 errorMessage("Se produjo un error al generar la factura.");
                 return;
-            }            
+            }
+            insertarComprobante(data.CAE, JSON.stringify(invoiceData), JSON.stringify(getInvoiceDetails()));
             invoiceGenerated(lastInvoice + 1, invoiceData.CbteFch);
         });
     } catch (e) {
         errorMessage(e);
     }
+}
+
+function getInvoiceDetails() {
+    let detalles = [];
+    $(".detalle-item").each(function (index) {
+        detalles.push({
+            'codigo': $($(this).find('.codigo')).val(),
+            'descripcion': $($(this).find('.detalle')).val(),
+            'iva': $($(this).find('.iva')).val(),
+            'neto': $($(this).find('.neto')).val(),
+            'subtotal': $($(this).find('.amount')).val()
+        })
+    });
+    return detalles;
 }
 
 async function getInvoiceData(lastInvoice) {
@@ -265,12 +280,14 @@ function getInvoiceIVAOBJ(cbteTipo) {
     }
     let iva21 = calculateIVAOBJ('21');
     let iva105 = calculateIVAOBJ('10.5');
+    let iva0 = calculateIVAOBJ('0');
+    let iva27 = calculateIVAOBJ('27');
 
-    return iva21.concat(iva105)
+    return iva21.concat(iva105).concat(iva0).concat(iva27)
 }
 
 function calculateIVA(input) {
-    let item = $(input).closest('.item');
+    let item = $(input).closest('.detalle-item');
     let iva = $(item).find('.iva');
     let neto = $(item).find('.neto');
     let amount = parseFloat($(input).val());
@@ -282,16 +299,16 @@ function calculateIVAOBJ(ivaVal) {
     let amount = 0;
     let netoVal = 0;
     $(".amount").each(function (index) {
-        let item = $(this).closest('.item');
+        let item = $(this).closest('.detalle-item');
         let iva = $(item).find('.iva');
         if ($(iva).val() == ivaVal) {
             amount += parseFloat($(this).val());
-            netoVal += amount / ((1+(parseFloat($(iva).val()))/100));
+            netoVal += parseFloat($(this).val()) / ((1+(parseFloat($(iva).val()))/100));
         }
     });
     if (amount != 0) {
         return [{
-            'Id':ivaVal == '10.5' ? '4' : '5',
+            'Id': ivaVal == '10.5' ? '4' : (ivaVal == '21' ? '5' : (ivaVal == '27' ? '6' : '3')),
             'BaseImp': netoVal.toFixed(2),
             'Importe': (amount - netoVal).toFixed(2),
         }];

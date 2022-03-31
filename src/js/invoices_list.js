@@ -75,6 +75,7 @@ async function searchAfipInvoices() {
                 clone.find(".invoice-number").html(invoice.CbteDesde);
                 clone.find(".invoice-date").html(parseInvoiceDate(invoice.CbteFch).toLocaleDateString());
                 clone.find(".invoice-concept").html(parseInvoiceConcept(invoice.Concepto));
+                clone.find(".invoice-cae").html(invoice.CodAutorizacion);
                 clone.find(".invoice-amount").html("$" + parseAmount(invoice.ImpTotal));
                 clone.appendTo(list);
             });
@@ -95,7 +96,7 @@ async function searchAfipInvoices() {
 
 function createViewInvoiceWindow(elem) {
     let btn = $(elem);
-
+    selectedCae = $($(elem).find('.invoice-cae')).text();
     if (!submitSpinner(btn)) {
         activeWindow.loadFile(path.join(__dirname, 'invoice_viewer.html'));
     }

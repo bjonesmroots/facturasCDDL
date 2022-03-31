@@ -4,6 +4,7 @@ const path                          = require('path');
 const assestPath                    = app.getPath("userData");
 const viewsPath                     = path.join(__dirname, 'views');
 
+let selectedCae = null;
 require('@electron/remote/main').initialize();
 
 try {
