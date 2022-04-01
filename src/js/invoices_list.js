@@ -92,12 +92,27 @@ async function searchAfipInvoices() {
     spinner.removeClass("is-active");
 }
 
-function createViewInvoiceWindow(elem) {
+function createViewInvoiceWindow(elem, print, savePdf) {
     let btn = $(elem);
-    localStorage.setItem('selectedCae', $($(elem).find('.invoice-cae')).text());
+    localStorage.setItem('selectedCae', $($(elem).parent().find('.invoice-cae')).text());
+    localStorage.setItem('selectedCaePrint', print);
+    localStorage.setItem('selectedCaeSavePdf', savePdf);
     if (!submitSpinner(btn)) {
         const ipcRenderer = require("electron").ipcRenderer;
         ipcRenderer.send("printPDF", '');
+    }
+    
+    submitSpinner(btn, null, false);
+  };
+
+  function sendEmail(elem) {
+    let btn = $(elem);
+    if (!submitSpinner(btn)) {
+        let email = prompt("Ingrese la casilla de email:", "");
+        if (email) {
+            const ipcRenderer = require("electron").ipcRenderer;
+            ipcRenderer.send("SendIt", $($(elem).parent().find('.invoice-cae')).text(),email);
+        }
     }
     
     submitSpinner(btn, null, false);

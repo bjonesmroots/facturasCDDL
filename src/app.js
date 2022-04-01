@@ -3,7 +3,8 @@ const { promises: fs, constants }   = require('fs');
 const path                          = require('path');
 const assestPath                    = app.getPath("userData");
 const viewsPath                     = path.join(__dirname, 'views');
-let workerWindow                  = null;
+let workerWindow                    = null;
+const nodemailer                    = require("nodemailer");
 require('@electron/remote/main').initialize();
 
 try {
@@ -61,7 +62,7 @@ ipcMain.on("printPDF", function(event, content){
   },1000)
 });
 
-ipcMain.on("readyToPrintPDF", (event) => {
+ipcMain.on("readyToPrintPDF", (event, selectedCaePrint, selectedCaeSavePdf, cae) => {
   var options = {
     silent: false,
     printBackground: true,
@@ -80,8 +81,53 @@ ipcMain.on("readyToPrintPDF", (event) => {
     header: 'Header of the Page',
     footer: 'Footer of the Page'
   }
-  workerWindow.webContents.print(options);
+  
+  if (selectedCaePrint == 'true') {
+    workerWindow.webContents.print(options);
+  }
+  if (selectedCaeSavePdf == 'true') {
+    setTimeout(function () {
+      workerWindow.webContents.printToPDF(options).then(data => {
+        fs.writeFile(path.join(assestPath, cae + ".pdf"), data);
+      }).catch(error => {
+        console.log('Failed to write PDF to ', error)
+      })
+    }, 2000);
+  }
 })
+
+function SendIt(cae, email) {
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "litoralfiatrosario@gmail.com",
+      pass: "Asdasd123.",
+    },
+  });
+
+  const mailOptions = {
+    from: "litoralfiatrosario@gmail.com", 
+    to: email,
+    subject: "Se adjunta comprobante",
+    html: "<p>Se adjunta comprobante.</p>",
+    attachments: [
+      {  
+          filename: cae + ".pdf",
+          path: path.join(assestPath, cae + ".pdf")
+      },
+    ]
+  };
+  transporter.sendMail(mailOptions, function (err, info) {
+    if (err) console.log(err);
+    else console.log(info);
+  });
+}
+
+
+ipcMain.on("SendIt", (event, cae) => {
+  console.log("ipcMain: Executing SendIt");
+  SendIt(cae, email);
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

@@ -96,13 +96,22 @@
         </fieldset>
         <div id="invoices-list-container" class="is-flex-grow-1">
           <ul id="invoices-list">
-            <li id="invoice-list-item-template" class="invoice-list-item is-hidden" onclick="createViewInvoiceWindow(this);">
+            <li id="invoice-list-item-template" class="invoice-list-item is-hidden">
               <div class="tile is-child notification is-flex">
                 <span class="invoice-number"></span>
                 <span class="invoice-body is-flex is-flex-direction-column">
                   <span class="invoice-date is-flex is-align-items-center"></span>
                   <span class="invoice-concept is-flex is-align-items-center"></span>
                 </span>
+                <div class="button is-primary is-rounded has-tooltip-primary has-tooltip-left is-flex is-align-items-center" onclick="createViewInvoiceWindow(this, 'true', 'false');" data-tooltip="Imprimir">
+                  <i class="fas fa-print"></i>
+                </div>
+                <div class="button is-primary is-rounded has-tooltip-primary has-tooltip-left is-flex is-align-items-center" onclick="sendEmail(this);" data-tooltip="Enviar Email">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div class="button is-primary is-rounded has-tooltip-primary has-tooltip-left is-flex is-align-items-center" onclick="createViewInvoiceWindow(this, 'false', 'false');" data-tooltip="Ver">
+                  <i class="fas fa-eye"></i>
+                </div>
                 <span class="invoice-cae is-flex is-align-items-center"></span>
                 <span class="invoice-amount is-flex is-align-items-center"></span>
               </div>

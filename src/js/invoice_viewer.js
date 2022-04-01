@@ -15,8 +15,10 @@ ipcRenderer.on("printPDF", (event, content) => {
         }
         $("#viewer").load(path.join(__dirname, 'invoice.html'));
         setTimeout(function() { cargarDatos(cabecera,detalle,cliente,comprobante); }, 1000);
-    }
-    ipcRenderer.send("readyToPrintPDF");
+        if (localStorage.getItem('selectedCaePrint') == 'true' || localStorage.getItem('selectedCaeSavePdf') == 'true') {
+            ipcRenderer.send("readyToPrintPDF", localStorage.getItem('selectedCaePrint'), localStorage.getItem('selectedCaeSavePdf'), comprobante.cae);
+        }
+    }    
 });
 
 

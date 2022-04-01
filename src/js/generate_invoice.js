@@ -134,7 +134,14 @@ async function generateInvoice(elem) {
         }
     }
     if (!submitSpinner(btn, fields) && validateForm()) {
-        await generateAfipInvoice();
+        let cae = await generateAfipInvoice();
+        if (cae) {
+            localStorage.setItem('selectedCae', cae);
+            localStorage.setItem('selectedCaePrint', 'true');
+            localStorage.setItem('selectedCaeSavePdf', 'true');
+            const ipcRenderer = require("electron").ipcRenderer;
+            ipcRenderer.send("printPDF", '');
+        }
     }
 
     submitSpinner(btn, fields, false);

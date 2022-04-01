@@ -2,7 +2,7 @@ const Afip          = require('@afipsdk/afip.js');
 const activeWindow  = electron.getCurrentWindow();
 const tempPath      = electron.app.getPath("temp");
 let afip, lastInvoiceNumber, lastInvoiceDate, cliente;
-const production = true;
+const production = false;
 async function initAfip() {
     afip = await getAfipUser();
 
@@ -162,10 +162,10 @@ async function generateAfipInvoice() {
         console.log(lastInvoice);
         console.log(invoiceData);
         let sentInvoiceData = JSON.stringify(invoiceData);
-        await afip.ElectronicBilling.createVoucher(invoiceData).then((data, err) => {
+        let cae = await afip.ElectronicBilling.createVoucher(invoiceData).then((data, err) => {
             if (err || !data.CAE) {
                 errorMessage("Se produjo un error al generar la factura.");
-                return;
+                return null;
             }
             let datosCliente = $('#razonSocial').val();
             if (cliente) {
@@ -173,10 +173,13 @@ async function generateAfipInvoice() {
             }
             insertarComprobante(data.CAE, datosCliente, sentInvoiceData, JSON.stringify(getInvoiceDetails()), data.CAEFchVto, $("#condicionVenta").val());
             invoiceGenerated(lastInvoice + 1, invoiceData.CbteFch);
+            return data.CAE;
         });
+        return cae;
     } catch (e) {
         errorMessage(e);
     }
+    return null;
 }
 
 function getInvoiceDetails() {
