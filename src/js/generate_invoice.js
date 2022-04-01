@@ -19,6 +19,13 @@ $(document).ready(async function() {
            consultarCuit();
         }
     });
+    $('#cuit').on("change", function() {
+        if(['80','86'].indexOf(tipoDocumento.val()) != -1) {
+           consultarCuit();
+        }
+    });
+    tipoDocumento.val(96);
+    handleTipoDocumento(tipoDocumento);
 });
 
 async function filtrarTiposFactura() {
@@ -67,6 +74,7 @@ function consultarCuit() {
             }
             $('#generateInvoice').removeAttr('disabled');
         } else {
+            cliente = null;
             errorMessage("No existe el cuit indicado");
             $('#generateInvoice').attr('disabled','disabled');
         }
@@ -83,20 +91,29 @@ function handleAmount(input) {
 }
 
 function handleTipoDocumento() {
+    cliente = null;
     $('#generateInvoice').removeAttr('disabled');
-    if ($(tipoDocumento).val() == 99) {
+    $('#razonSocial').attr('disabled','disabled');
+    $('#cuit').attr('disabled','disabled');
+    if ($(tipoDocumento).val() == 99 || $(tipoDocumento).val() == 96) {
+        $('#razonSocial').val('CONSUMIDOR FINAL');
         $('#cuit').val('');
         $('#generateInvoice').removeAttr('disabled');
         if (datosContribuyenteFacturador.datosRegimenGeneral) {
             $('#invoiceType').val(6);
             $('#condicionIva').val(0);
         }
-    } else {
+        if ($(tipoDocumento).val() == 96) {
+            $('#lblCuit').text($('#tipoDocumento option:selected').text());
+            $('#cuit').removeAttr('disabled');
+            $('#razonSocial').removeAttr('disabled');
+            $('#razonSocial').val('');
+        }
+    }
+    else {
+        $('#razonSocial').val('');
         $('#lblCuit').text($('#tipoDocumento option:selected').text());
         $('#cuit').removeAttr('disabled');
-        if ($(tipoDocumento).val() != 96) {
-            $('#generateInvoice').attr('disabled','disabled');
-        }
     }
 }
 
@@ -104,6 +121,18 @@ async function generateInvoice(elem) {
     let btn    = $(elem),
         fields = $("#invoice-fields");
 
+    if ($(tipoDocumento).val() == 96) {
+        if ($('#razonSocial').val() == '' || $('#cuit').val() == '') {
+            errorMessage('Error en datos del contribuyente.')
+            return;
+        }
+    }
+    if ($(tipoDocumento).val() == 80 || $(tipoDocumento).val() == 86) {
+        if (!cliente) {
+            errorMessage('Error en datos del contribuyente.')
+            return;
+        }
+    }
     if (!submitSpinner(btn, fields) && validateForm()) {
         await generateAfipInvoice();
     }
@@ -160,7 +189,7 @@ function validateAmount() {
             let value  = $(this).val(),
                 amount = parseFloat(value);
     
-            if (amount > 0 && amount < 7600) {
+            if (amount != 0) {
                 errors = true;
             }
         } 

@@ -7,7 +7,6 @@ $(document).ready(async function() {
     bindPointOfSale();
     updateDateRangePicker().setDates(addDate(new Date(), -1), new Date());
     submitSpinner(btn, fields, false);
-    await searchInvoices();
 });
 
 function bindPointOfSale() {
