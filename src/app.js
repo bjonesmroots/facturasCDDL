@@ -3,7 +3,7 @@ const { promises: fs, constants }   = require('fs');
 const path                          = require('path');
 const assestPath                    = app.getPath("userData");
 const viewsPath                     = path.join(__dirname, 'views');
-
+let workerWindow                  = null;
 require('@electron/remote/main').initialize();
 
 try {
@@ -40,10 +40,48 @@ const createWindow = async () => {
     shell.openExternal(url);
     return { action: 'deny' };
   });
-
+  
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();
 };
+
+ipcMain.on("printPDF", function(event, content){
+  workerWindow = new BrowserWindow({
+    width: 1000,
+    height: 900,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+    }
+  });
+  workerWindow.loadURL("file://" + __dirname + "/views/invoice_viewer.html");
+  setTimeout(function () {
+    workerWindow.webContents.send("printPDF", content);
+  },1000)
+});
+
+ipcMain.on("readyToPrintPDF", (event) => {
+  var options = {
+    silent: false,
+    printBackground: true,
+    color: false,
+    margin: {
+        marginType:'custom',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
+    landscape: false,
+    pagesPerSheet: 1,
+    collate: false,
+    copies: 1,
+    header: 'Header of the Page',
+    footer: 'Footer of the Page'
+  }
+  workerWindow.webContents.print(options);
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -65,20 +103,6 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
-});
-
-ipcMain.on('exportSelectionToPDF', (event, content, cae) => {
-
-  let workerWindow = new BrowserWindow();
-  const fsPromises = require('fs').promises;
-  fsPromises.writeFile(path.join(assestPath, cae + ".html"), 'data:text/html;charset=utf-8,<html>' + content + '</html>')
-  .then(() => {
-    workerWindow.loadFile(assestPath, cae + ".html");
-    workerWindow.webContents.print();
-  })
-  .catch(err => {
-    let asd = err;
-  });
 });
 
 async function configurated() {

@@ -23,7 +23,7 @@ $(document).ready(async function() {
 
 async function filtrarTiposFactura() {
     if (datosContribuyenteFacturador.datosRegimenGeneral) {
-        $('#invoiceType').html('<option selected value="1">Factura A</option><option value="6">Factura B</option><option value="3">Nota Credito A</option><option value="8">Nota Credito B</option>');
+        $('#invoiceType').html('<option value="1">Factura A</option><option selected value="6">Factura B</option><option value="3">Nota Credito A</option><option value="8">Nota Credito B</option>');
     } else if (datosContribuyenteFacturador.datosMonotributo) {
         $('#invoiceType').html('<option selected value="11">Factura C</option><option value="13">Nota Credito C</option>');
     }
@@ -65,8 +65,10 @@ function consultarCuit() {
             } else if (!datosContribuyenteFacturador.datosRegimenGeneral) {
                 $('#invoiceType').val(11);
             }
+            $('#generateInvoice').removeAttr('disabled');
         } else {
             errorMessage("No existe el cuit indicado");
+            $('#generateInvoice').attr('disabled','disabled');
         }
     });   
 }
@@ -81,9 +83,10 @@ function handleAmount(input) {
 }
 
 function handleTipoDocumento() {
+    $('#generateInvoice').removeAttr('disabled');
     if ($(tipoDocumento).val() == 99) {
-        $('#cuit').attr('disabled','disabled');
         $('#cuit').val('');
+        $('#generateInvoice').removeAttr('disabled');
         if (datosContribuyenteFacturador.datosRegimenGeneral) {
             $('#invoiceType').val(6);
             $('#condicionIva').val(0);
@@ -91,6 +94,9 @@ function handleTipoDocumento() {
     } else {
         $('#lblCuit').text($('#tipoDocumento option:selected').text());
         $('#cuit').removeAttr('disabled');
+        if ($(tipoDocumento).val() != 96) {
+            $('#generateInvoice').attr('disabled','disabled');
+        }
     }
 }
 

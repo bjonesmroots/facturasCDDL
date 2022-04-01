@@ -2,59 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Facturas CDDL</title>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/css/datepicker.min.css">
-    <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/invoice_viewer.css">
-
-
-    <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/js/datepicker-full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/js/locales/es.js"></script>
-
-    <script src="../../node_modules/@fortawesome/fontawesome-free/js/all.min.js"></script>
-    <script src="../../node_modules/bulma-toast/dist/bulma-toast.min.js"></script>
-
-    <script defer src="../js/main.js"></script>
-    <script defer src="../js/afip.js"></script>
     <script defer src="../js/db.js"></script>
-    <script defer src="../js/invoice_viewer.js"></script>
+    <script  type="module" src="../js/invoice_viewer.js"></script>
   </head>
-  <body class="is-flex is-flex-direction-column">
-    <section id="app-header" class="hero is-primary">
-      <div class="hero-head">
-        <nav class="navbar">
-          <div class="navbar-brand">
-            <div class="navbar-item">
-              <img src="../../assets/icon.png" alt="Logo">
-              <span>Facturas CDDL</span>
-            </div>
-          </div>
-          <div class="navbar-menu">
-            <div class="navbar-end">
-              <div class="navbar-item">
-                <div class="buttons are-small">
-                  <div class="button is-primary is-rounded has-tooltip-primary has-tooltip-left" onclick="loadInvoicesListView(this);" data-tooltip="Consulta de comprobantes">
-                    <i class="fas fa-list"></i>
-                  </div>
-                  <div class="button is-primary is-rounded has-tooltip-primary has-tooltip-left" onclick="print(this);" data-tooltip="Imprimir">
-                    <i class="fas fa-print"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </div>
-      <div class="hero-body">
-        <p class="title has-text-centered">Visor de comprobante</p>
-      </div>
-    </section>
-    <section id="app-body" class="section is-flex is-flex-direction-column is-flex-grow-1 contains-list no-footer-section">
-        <div id="viewer" class="viewer">
-
-		</div>
-    </section>
-  </body>
+<body>
+  <div id="viewer" class="viewer">
+</body>
 </html>

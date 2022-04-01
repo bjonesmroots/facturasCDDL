@@ -166,7 +166,7 @@ async function generateAfipInvoice() {
                 errorMessage("Se produjo un error al generar la factura.");
                 return;
             }
-            insertarComprobante(data.CAE, JSON.stringify(cliente), JSON.stringify(invoiceData), JSON.stringify(getInvoiceDetails()), data.CAEFchVto);
+            insertarComprobante(data.CAE, JSON.stringify(cliente), JSON.stringify(invoiceData), JSON.stringify(getInvoiceDetails()), data.CAEFchVto, $("#condicionVenta").val());
             invoiceGenerated(lastInvoice + 1, invoiceData.CbteFch);
         });
     } catch (e) {
@@ -193,7 +193,7 @@ async function getInvoiceData(lastInvoice) {
         pointOfSale = $("#pointOfSale").val(),
         cbteTipo    = $("#invoiceType").val(),
         docTipo     = $("#tipoDocumento").val(),
-        docNro      = $("#cuit").val(),
+        docNro      = $("#cuit").val() == '' ? 0 : $("#cuit").val(),
         date        = $("#date").val(),
         amount      = getInvoiceAmount(cbteTipo),
         neto        = getInvoiceNeto(cbteTipo),
@@ -220,11 +220,13 @@ async function getInvoiceData(lastInvoice) {
             'ImpNeto' 		: neto,       // Importe neto gravado
             'ImpOpEx' 		: 0,            // Importe exento de IVA
             'ImpIVA' 		: impIva,          // Importe total de IVA
-            'Iva' 		    : iva,          // Importe total de IVA
             'ImpTrib' 		: 0,            // Importe total de tributos
             'MonId' 		: 'PES',        // Tipo de moneda usada en el comprobante ('PES' para pesos argentinos) 
             'MonCotiz' 		: 1,            // Cotización de la moneda usada (1 para pesos argentinos)  
         };
+        if (iva) {
+            invoiceData.Iva = iva;
+        }
         if (['3','8','13'].indexOf(cbteTipo) != -1) {
             invoiceData.CbtesAsoc = {
                 'Tipo': cbteTipo == 3 ? 1 : (cbteTipo == 8 ? 6 : 11),
@@ -276,7 +278,7 @@ function getInvoiceIVA(cbteTipo) {
 
 function getInvoiceIVAOBJ(cbteTipo) {
     if (['11','13'].includes(cbteTipo)) {
-        return {};
+        return null;
     }
     let iva21 = calculateIVAOBJ('21');
     let iva105 = calculateIVAOBJ('10.5');

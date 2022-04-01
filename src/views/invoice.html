@@ -14,7 +14,7 @@
 	.ft14{font-size:46px;font-family:Times;color:#000000;}
 	.ft15{font-size:11px;font-family:Times;color:#000000;}
 	.ft16{font-size:22px;font-family:Times;color:#000000;}
-	.ft17{font-size:4px;font-family:Times;color:#000000;}
+	.ft17{font-size:10px;font-family:Times;color:#000000;}
 	.ft18{font-size:12px;font-family:Times;color:#000000;}
 	.ft19{font-size:14px;font-family:Times;color:#000000;}
 	.ft100{font-size:18px;font-family:Times;color:#000000;}
@@ -60,8 +60,8 @@
 <p style="position:absolute;top:107px;left:722px;white-space:nowrap" class="ft13">#NUMERO_COMPROBANTE#</p>
 <p style="position:absolute;top:425px;left:691px;white-space:nowrap" class="ft10">#FECHA_VTO_COMPROBANTE#</p>
 <p style="position:absolute;top:465px;left:705px;white-space:nowrap" class="ft15"><b>SUBTOTAL</b></p>
-<p style="position:absolute;top:465px;left:584px;white-space:nowrap" class="ft17"><b>Alicuota</b></p>
-<p style="position:absolute;top:474px;left:591px;white-space:nowrap" class="ft17"><b>IVA</b></p>
+<p style="position:absolute;top:465px;left:584px;white-space:nowrap" class="ft17"><b>#ALICUOTA_TEXTO#</b></p>
+<p style="position:absolute;top:474px;left:591px;white-space:nowrap" class="ft17"><b>#ALICUOTA_IVA_TEXTO#</b></p>
 <p style="position:absolute;top:465px;left:258px;white-space:nowrap" class="ft15"><b>DESCRIPCIÓN</b></p>
 <p style="position:absolute;top:495px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_1#</p>
 <p style="position:absolute;top:495px;left:764px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_1#</p>
@@ -69,11 +69,50 @@
 <p style="position:absolute;top:518px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_2#</p>
 <p style="position:absolute;top:518px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_2#</p>
 <p style="position:absolute;top:518px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_2#</p>
+<p style="position:absolute;top:541px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_3#</p>
+<p style="position:absolute;top:541px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_3#</p>
+<p style="position:absolute;top:541px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_3#</p>
+<p style="position:absolute;top:564px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_4#</p>
+<p style="position:absolute;top:564px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_4#</p>
+<p style="position:absolute;top:564px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_4#</p>
+<p style="position:absolute;top:587px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_5#</p>
+<p style="position:absolute;top:587px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_5#</p>
+<p style="position:absolute;top:587px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_5#</p>
+<p style="position:absolute;top:610px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_6#</p>
+<p style="position:absolute;top:610px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_6#</p>
+<p style="position:absolute;top:610px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_6#</p>
+<p style="position:absolute;top:633px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_7#</p>
+<p style="position:absolute;top:633px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_7#</p>
+<p style="position:absolute;top:633px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_7#</p>
+<p style="position:absolute;top:656px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_8#</p>
+<p style="position:absolute;top:656px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_8#</p>
+<p style="position:absolute;top:656px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_8#</p>
+<p style="position:absolute;top:679px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_9#</p>
+<p style="position:absolute;top:679px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_9#</p>
+<p style="position:absolute;top:679px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_9#</p>
+<p style="position:absolute;top:702px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_10#</p>
+<p style="position:absolute;top:702px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_10#</p>
+<p style="position:absolute;top:702px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_10#</p>
+<p style="position:absolute;top:725px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_11#</p>
+<p style="position:absolute;top:725px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_11#</p>
+<p style="position:absolute;top:725px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_11#</p>
+<p style="position:absolute;top:748px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_12#</p>
+<p style="position:absolute;top:748px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_12#</p>
+<p style="position:absolute;top:748px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_12#</p>
+<p style="position:absolute;top:771px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_13#</p>
+<p style="position:absolute;top:771px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_13#</p>
+<p style="position:absolute;top:771px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_13#</p>
+<p style="position:absolute;top:794px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_14#</p>
+<p style="position:absolute;top:794px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_14#</p>
+<p style="position:absolute;top:794px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_14#</p>
+<p style="position:absolute;top:817px;left:145px;white-space:nowrap" class="ft18">#DETALLE_DESC_15#</p>
+<p style="position:absolute;top:817px;left:772px;white-space:nowrap" class="ft18">&#160;#DETALLE_VALOR_15#</p>
+<p style="position:absolute;top:817px;left:577px;white-space:nowrap" class="ft18">&#160;#DETALLE_IVA_15#</p>
 <p style="position:absolute;top:1032px;left:731px;white-space:nowrap" class="ft11">&#160;#TOTAL_COMPROBANTE#</p>
 <p style="position:absolute;top:875px;left:743px;white-space:nowrap" class="ft13">&#160;#NETO_COMPROBANTE#</p>
 <p style="position:absolute;top:989px;left:765px;white-space:nowrap" class="ft19">&#160;#IVA_COMPROBANTE#</p>
-<p style="position:absolute;top:875px;left:445px;white-space:nowrap" class="ft13">Importe Neto Gravado: $</p>
-<p style="position:absolute;top:989px;left:579px;white-space:nowrap" class="ft19">IVA:</p>
+<p style="position:absolute;top:875px;left:445px;white-space:nowrap" class="ft13">#NETO_TEXTO#</p>
+<p style="position:absolute;top:989px;left:579px;white-space:nowrap" class="ft19">#IVA_TEXTO#</p>
 <p style="position:absolute;top:1031px;left:500px;white-space:nowrap" class="ft13">Importe Total: $</p>
 <p style="position:absolute;top:1089px;left:637px;white-space:nowrap" class="ft15"><b>CAE Nº:</b></p>
 <p style="position:absolute;top:1088px;left:730px;white-space:nowrap" class="ft10">#CAE_COMPROBANTE#</p>
@@ -86,8 +125,8 @@
 <p style="position:absolute;top:1155px;left:343px;white-space:nowrap" class="ft110"><b>info@litoralfiat.com.ar &#160;- &#160;www.litoralfiat.com.ar</b></p>
 <p style="position:absolute;top:942px;left:776px;white-space:nowrap" class="ft10">&#160;#IVA21_COMPROBANTE#</p>
 <p style="position:absolute;top:962px;left:776px;white-space:nowrap" class="ft10">&#160;#IVA105_COMPROBANTE#</p>
-<p style="position:absolute;top:938px;left:566px;white-space:nowrap" class="ft10">IVA 21%:</p>
-<p style="position:absolute;top:962px;left:555px;white-space:nowrap" class="ft10">IVA 10.5%:</p>
+<p style="position:absolute;top:938px;left:566px;white-space:nowrap" class="ft10">#IVA21_TEXTO#</p>
+<p style="position:absolute;top:962px;left:555px;white-space:nowrap" class="ft10">#IVA105_TEXTO#</p>
 </div>
 </body>
 </html>

@@ -66,7 +66,7 @@ async function searchAfipInvoices() {
 
         if (invs.length) {
             totalAmount = invs.reduce((a, b) => a + (parseInt(b["ImpTotal"]) || 0), 0);
-            invs.forEach(invoice => {
+            invs.reverse().forEach(invoice => {
                 clone = template.clone();
                 
                 clone.removeAttr("id");
@@ -97,7 +97,8 @@ function createViewInvoiceWindow(elem) {
     let btn = $(elem);
     localStorage.setItem('selectedCae', $($(elem).find('.invoice-cae')).text());
     if (!submitSpinner(btn)) {
-        activeWindow.loadFile(path.join(__dirname, 'invoice_viewer.html'));
+        const ipcRenderer = require("electron").ipcRenderer;
+        ipcRenderer.send("printPDF", '');
     }
     
     submitSpinner(btn, null, false);

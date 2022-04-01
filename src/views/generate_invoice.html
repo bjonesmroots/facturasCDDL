@@ -78,15 +78,25 @@
                 </select>
               </div>
             </div>
+            <div class="field">
+              <label class="label">Cond. Venta</label>
+              <div class="select">
+                <select id="condicionVenta" data-val="2">
+                  <option selected value="Contado">Contado</option>
+                  <option value="Cta. Cte.">Cta. Cte.</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="field is-grouped">
             <div class="field">
               <label class="label">Tipo Documento</label>
               <div class="select">
                 <select id="tipoDocumento" data-val="2">
-                  <option value="99">Consumidor Final</option>
+                  <option selected value="99">Consumidor Final</option>
                   <option value="96">DNI</option>
-                  <option selected value="80">CUIT</option>
+                  <option value="80">CUIT</option>
                   <option value="86">CUIL</option>
                 </select>
               </div>
@@ -94,7 +104,7 @@
             <div class="field">
               <label id="lblCuit" class="label">Cuit</label>
               <div class="control">
-                  <input id="cuit" value="30000000007" class="input">
+                  <input disabled id="cuit" value="" class="input">
               </div>
             </div>
             <div class="field is-expanded">
@@ -117,8 +127,8 @@
               <label class="label">Tipo Comprobante</label>
               <div class="select">
                 <select id="invoiceType" data-val="2">
-                  <option selected value="1">Factura A</option>
-                  <option value="6">Factura B</option>
+                  <option value="1">Factura A</option>
+                  <option selected value="6">Factura B</option>
                   <option value="11">Factura C</option>
                   <option value="3">Nota Credito A</option>
                   <option value="8">Nota Credito B</option>
