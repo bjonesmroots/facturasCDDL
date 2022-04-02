@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css?family=Lato:400,700");
 /*! bulma.io v0.9.3 | MIT License | github.com/jgthms/bulma */
 /* Bulma Utilities */
+.row-icon {
+  margin-top: 10px;
+  margin-right: 10px;
+}
 .button, .input, .textarea, .select select, .file-cta,
 .file-name, .pagination-previous,
 .pagination-next,

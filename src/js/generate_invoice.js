@@ -24,6 +24,14 @@ $(document).ready(async function() {
            consultarCuit();
         }
     });
+    $('#invoiceType').on("change", function() {
+        if(['3','8','13'].indexOf($('#invoiceType').val()) != -1) {
+            $('#cbteAsoc').removeAttr('disabled');
+        } else {
+            $('#cbteAsoc').val('');
+            $('#cbteAsoc').attr('disabled','disabled');
+        }
+    });
     tipoDocumento.val(96);
     handleTipoDocumento(tipoDocumento);
 });
@@ -155,6 +163,12 @@ function agregarDetalle() {
 function limpiarDetalles() {
     let detalle = '<div class="field is-grouped detalle-item">'+$($(".detalle-item")[0]).html()+'</div>';
     $("#detalle").html(detalle);
+    $('#condicionVentaExtra').val('');
+    $('#cuit').val('');
+    $('#razonSocial').val('');
+    $('#tipoDocumento').val(96);
+    $('#invoiceType').val(6);
+    $('#condicionVenta').val('Contado');
     initAmountHandlers();
 }
 

@@ -82,17 +82,19 @@ ipcMain.on("readyToPrintPDF", (event, selectedCaePrint, selectedCaeSavePdf, cae)
     footer: 'Footer of the Page'
   }
   
-  if (selectedCaePrint == 'true') {
-    workerWindow.webContents.print(options);
-  }
   if (selectedCaeSavePdf == 'true') {
     setTimeout(function () {
-      workerWindow.webContents.printToPDF(options).then(data => {
-        fs.writeFile(path.join(assestPath, cae + ".pdf"), data);
-      }).catch(error => {
-        console.log('Failed to write PDF to ', error)
-      })
+        workerWindow.webContents.printToPDF(options).then(data => {
+          fs.writeFile(path.join(assestPath, 'comprobantes/' + cae + ".pdf"), data);
+          if (selectedCaePrint == 'true') {
+            workerWindow.webContents.print(options);
+          }
+        }).catch(error => {
+          console.log('Failed to write PDF to ', error)
+        });
     }, 2000);
+  } else if (selectedCaePrint == 'true') {
+    workerWindow.webContents.print(options);
   }
 })
 
@@ -113,18 +115,22 @@ function SendIt(cae, email) {
     attachments: [
       {  
           filename: cae + ".pdf",
-          path: path.join(assestPath, cae + ".pdf")
+          path: path.join(assestPath, 'comprobantes/' + cae + ".pdf")
       },
     ]
   };
   transporter.sendMail(mailOptions, function (err, info) {
-    if (err) console.log(err);
-    else console.log(info);
+    if (err) {
+      
+    }
+    else { 
+      
+    }
   });
 }
 
 
-ipcMain.on("SendIt", (event, cae) => {
+ipcMain.on("SendIt", (event, cae, email) => {
   console.log("ipcMain: Executing SendIt");
   SendIt(cae, email);
 });
@@ -153,6 +159,10 @@ app.on('activate', () => {
 
 async function configurated() {
   try {
+    try {
+      await fs.mkdir(path.join(assestPath, 'comprobantes'));
+    } catch (e) {
+    }
     await fs.access(path.join(assestPath, 'cert.crt'), constants.R_OK);
     await fs.access(path.join(assestPath, 'key.key'), constants.R_OK);
     await fs.access(path.join(assestPath, 'cuit.txt'), constants.R_OK);

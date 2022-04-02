@@ -1,3 +1,4 @@
+const prompt = require('electron-prompt');
 $(document).ready(async function() {
     let btn    = $("#loadMore"),
         fields = $("#invoice-fields");
@@ -108,11 +109,22 @@ function createViewInvoiceWindow(elem, print, savePdf) {
   function sendEmail(elem) {
     let btn = $(elem);
     if (!submitSpinner(btn)) {
-        let email = prompt("Ingrese la casilla de email:", "");
-        if (email) {
-            const ipcRenderer = require("electron").ipcRenderer;
-            ipcRenderer.send("SendIt", $($(elem).parent().find('.invoice-cae')).text(),email);
-        }
+        prompt({
+            title: 'Ingrese la casilla de email:',
+            label: 'Email:',
+            value: '',
+            inputAttrs: {
+                type: 'email'
+            },
+            type: 'input'
+        })
+        .then((email) => {
+            if(email !== null) {        
+                const ipcRenderer = require("electron").ipcRenderer;
+                ipcRenderer.send("SendIt", $($(elem).parent().find('.invoice-cae')).text(),email);
+            }
+        })
+        .catch(console.error);
     }
     
     submitSpinner(btn, null, false);

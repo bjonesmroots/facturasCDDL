@@ -37,12 +37,21 @@ function cargarDatos(cabecera,detalle,cliente,comprobante) {
     $("#viewer").html($("#viewer").html().replace('#LETRA_COMPROBANTE#',parsearLetra(cabecera)));
     $("#viewer").html($("#viewer").html().replace('#CODIGO_COMPROBANTE#',parsearCodigo(cabecera)));
     $("#viewer").html($("#viewer").html().replace('#NUMERO_COMPROBANTE#',parsearNumeroComprobante(cabecera.CbteDesde)));
+    $("#viewer").html($("#viewer").html().replace('#PTO_VTA_COMPROBANTE#',parsearNumeroPtoVta(cabecera.PtoVta)));
     $("#viewer").html($("#viewer").html().replace('#FECHA_VTO_COMPROBANTE#',parsearFecha(cabecera.CbteFch.toString())));
     $("#viewer").html($("#viewer").html().replace('#CAE_COMPROBANTE#', comprobante.cae));
-    $("#viewer").html($("#viewer").html().replace('#VTO_CAE_COMPROBANTE#',parsearFechaCAE(comprobante.vto_cae.toString())));
+    $("#viewer").html($("#viewer").html().replace('#VTO_CAE_COMPROBANTE#',parsearFechaCAE(cabecera.CAEFchVto.toString())));
     $("#viewer").html($("#viewer").html().replace('#TOTAL_COMPROBANTE#',parseFloat(cabecera.ImpTotal).toFixed(2)));
-    $("#viewer").html($("#viewer").html().replace('#CONDICION_COMPROBANTE#',comprobante.cond_venta));
+    $("#viewer").html($("#viewer").html().replace('#CONDICION_COMPROBANTE#',cabecera.condicionVenta));
+    $("#viewer").html($("#viewer").html().replace('#CONDICION_EXTRA_COMPROBANTE#', cabecera.condicionVentaExtra != '' ? '(' + cabecera.condicionVentaExtra + ')' : ''));
     $("#viewer").html($("#viewer").html().replace('#TIPO_COMPROBANTE#', ['1','6'].indexOf(cabecera.CbteTipo) != -1 ? 'FACTURA' : 'NOTA DE CREDITO'));
+    $("#viewer").html($("#viewer").html().replace('#DOCTIPO_COMPROBANTE#', cabecera.DocTipo == '99' ? 'DNI' : (cabecera.DocTipo == '80' ? 'CUIT' : 'CUIL')));
+    let cbteAsoc = '';
+    if (cabecera.CbtesAsoc) {
+        cbteAsoc = 'Comprobante Asociado: ' + parsearNumeroPtoVta(cabecera.CbtesAsoc.PtoVta) + '-' + parsearNumeroComprobante(cabecera.CbtesAsoc.Nro);
+    }
+    $("#viewer").html($("#viewer").html().replace('#COMPROBANTE_ASOCIADO#', cbteAsoc));
+    
     cargarDatosContribuyente(cliente,cabecera);
 
     if (['1','3'].indexOf(cabecera.CbteTipo) != -1) {
@@ -56,12 +65,12 @@ function cargarDatos(cabecera,detalle,cliente,comprobante) {
 }
 
 function cargarDatosContribuyente(cliente,cabecera) {    
-    $("#viewer").html($("#viewer").html().replace('#CLIENTE_CUIT#',cabecera.DocNro));
+    $("#viewer").html($("#viewer").html().replace('#CLIENTE_CUIT#',cabecera.DocNro == '0' ? '' : cabecera.DocNro));
     if (typeof cliente === 'object') {
         $("#viewer").html($("#viewer").html().replace('#CLIENTE_NOMBRE#',cliente.datosGenerales.razonSocial ?? cliente.datosGenerales.nombre + ' ' + cliente.datosGenerales.nombre));
         $("#viewer").html($("#viewer").html().replace('#CLIENTE_DIRECCION#',capitalizeFirstLetter(cliente.datosGenerales.domicilioFiscal.direccion)));
         $("#viewer").html($("#viewer").html().replace('#CLIENTE_CIUDAD#',cliente.datosGenerales.domicilioFiscal.localidad ?? cliente.datosGenerales.domicilioFiscal.datoAdicional));
-        $("#viewer").html($("#viewer").html().replace('#CLIENTE_CP#',cliente.datosGenerales.domicilioFiscal.codPostal));
+        $("#viewer").html($("#viewer").html().replace('#CLIENTE_CP#','('+ cliente.datosGenerales.domicilioFiscal.codPostal + ')'));
         $("#viewer").html($("#viewer").html().replace('#CLIENTE_PROVINCIA#',cliente.datosGenerales.domicilioFiscal.descripcionProvincia));
     } else {
         $("#viewer").html($("#viewer").html().replace('#CLIENTE_NOMBRE#',cliente));
@@ -80,7 +89,7 @@ function remplazarDetalles(detalle, tieneIva) {
     for (let i = 0; i < 15; i++) {
         if (i + 1 <= detalle.length) {
             $("#viewer").html($("#viewer").html().replace('#DETALLE_DESC_' + (i+1) + '#',detalle[i].descripcion));
-            $("#viewer").html($("#viewer").html().replace('#DETALLE_VALOR_' + (i+1) + '#', tieneIva ? detalle[i].neto : detalle[i].subtotal));
+            $("#viewer").html($("#viewer").html().replace('#DETALLE_VALOR_' + (i+1) + '#', tieneIva ? parseFloat(detalle[i].neto).toFixed(2) : parseFloat(detalle[i].subtotal).toFixed(2)));
             $("#viewer").html($("#viewer").html().replace('#DETALLE_IVA_' + (i+1) + '#',tieneIva ? detalle[i].iva + '%' : ''));
         } else {
             $("#viewer").html($("#viewer").html().replace('#DETALLE_DESC_' + (i+1) + '#',''));
@@ -132,4 +141,8 @@ function parsearCodigo(cabecera) {
 
 function parsearNumeroComprobante(numero) {
     return ('00000000' + numero).slice(-8);
+}
+
+function parsearNumeroPtoVta(numero) {
+    return ('000' + numero).slice(-4);
 }

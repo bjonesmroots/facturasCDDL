@@ -171,7 +171,11 @@ async function generateAfipInvoice() {
             if (cliente) {
                 datosCliente = JSON.stringify(cliente);
             }
-            insertarComprobante(data.CAE, datosCliente, sentInvoiceData, JSON.stringify(getInvoiceDetails()), data.CAEFchVto, $("#condicionVenta").val());
+            sentInvoiceData = JSON.parse(sentInvoiceData);
+            sentInvoiceData.CAEFchVto = data.CAEFchVto;
+            sentInvoiceData.condicionVenta =  $("#condicionVenta").val();
+            sentInvoiceData.condicionVentaExtra =  $("#condicionVentaExtra").val();
+            insertarComprobante(data.CAE, datosCliente, JSON.stringify(sentInvoiceData), JSON.stringify(getInvoiceDetails()));
             invoiceGenerated(lastInvoice + 1, invoiceData.CbteFch);
             return data.CAE;
         });
@@ -200,6 +204,7 @@ async function getInvoiceData(lastInvoice) {
     let concept     = $("#concept").val(),
         pointOfSale = $("#pointOfSale").val(),
         cbteTipo    = $("#invoiceType").val(),
+        cbteAsoc    = $("#cbteAsoc").val(),
         docTipo     = $("#tipoDocumento").val(),
         docNro      = $("#cuit").val() == '' ? 0 : $("#cuit").val(),
         date        = $("#date").val(),
@@ -235,11 +240,11 @@ async function getInvoiceData(lastInvoice) {
         if (iva) {
             invoiceData.Iva = iva;
         }
-        if (['3','8','13'].indexOf(cbteTipo) != -1) {
+        if (['3','8','13'].indexOf(cbteTipo) != -1  && cbteAsoc && cbteAsoc != '') {
             invoiceData.CbtesAsoc = {
                 'Tipo': cbteTipo == 3 ? 1 : (cbteTipo == 8 ? 6 : 11),
                 'PtoVta': pointOfSale,
-                'Nro': 1,
+                'Nro': cbteAsoc,
             };
         }
     return invoiceData;
