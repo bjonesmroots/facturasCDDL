@@ -2,7 +2,7 @@ const Afip          = require('@afipsdk/afip.js');
 const activeWindow  = electron.getCurrentWindow();
 const tempPath      = electron.app.getPath("temp");
 let afip, lastInvoiceNumber, lastInvoiceDate, cliente;
-const production = false;
+const production = true;
 async function initAfip() {
     afip = await getAfipUser();
 
