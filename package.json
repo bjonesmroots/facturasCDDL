@@ -69,6 +69,7 @@
     "better-sqlite3": "^7.5.0",
     "bulma-pageloader": "^0.3.0",
     "bulma-toast": "^2.3.1",
+    "electron-builder": "^22.14.13",
     "electron-prompt": "^1.7.0",
     "electron-squirrel-startup": "^1.0.0",
     "jquery": "^3.6.0",

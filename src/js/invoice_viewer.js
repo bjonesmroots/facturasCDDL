@@ -40,10 +40,10 @@ function cargarDatos(cabecera,detalle,cliente,comprobante) {
     $("#viewer").html($("#viewer").html().replace('#PTO_VTA_COMPROBANTE#',parsearNumeroPtoVta(cabecera.PtoVta)));
     $("#viewer").html($("#viewer").html().replace('#FECHA_VTO_COMPROBANTE#',parsearFecha(cabecera.CbteFch.toString())));
     $("#viewer").html($("#viewer").html().replace('#CAE_COMPROBANTE#', comprobante.cae));
-    $("#viewer").html($("#viewer").html().replace('#VTO_CAE_COMPROBANTE#',parsearFechaCAE(cabecera.CAEFchVto.toString())));
+    $("#viewer").html($("#viewer").html().replace('#VTO_CAE_COMPROBANTE#',parsearFechaCAE((cabecera.CAEFchVto ? cabecera.CAEFchVto : '').toString())));
     $("#viewer").html($("#viewer").html().replace('#TOTAL_COMPROBANTE#',parseFloat(cabecera.ImpTotal).toFixed(2)));
-    $("#viewer").html($("#viewer").html().replace('#CONDICION_COMPROBANTE#',cabecera.condicionVenta));
-    $("#viewer").html($("#viewer").html().replace('#CONDICION_EXTRA_COMPROBANTE#', cabecera.condicionVentaExtra != '' ? '(' + cabecera.condicionVentaExtra + ')' : ''));
+    $("#viewer").html($("#viewer").html().replace('#CONDICION_COMPROBANTE#',cabecera.condicionVenta ? cabecera.condicionVenta : ''));
+    $("#viewer").html($("#viewer").html().replace('#CONDICION_EXTRA_COMPROBANTE#', (cabecera.condicionVentaExtra && cabecera.condicionVentaExtra != '') ? '(' + cabecera.condicionVentaExtra + ')' : ''));
     $("#viewer").html($("#viewer").html().replace('#TIPO_COMPROBANTE#', ['1','6'].indexOf(cabecera.CbteTipo) != -1 ? 'FACTURA' : 'NOTA DE CREDITO'));
     $("#viewer").html($("#viewer").html().replace('#DOCTIPO_COMPROBANTE#', cabecera.DocTipo == '99' ? 'DNI' : (cabecera.DocTipo == '80' ? 'CUIT' : 'CUIL')));
     let cbteAsoc = '';
