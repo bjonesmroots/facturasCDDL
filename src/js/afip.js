@@ -2,7 +2,7 @@ const Afip          = require('@afipsdk/afip.js');
 const activeWindow  = electron.getCurrentWindow();
 const tempPath      = electron.app.getPath("temp");
 let afip, lastInvoiceNumber, lastInvoiceDate, cliente;
-const production = true;
+const production = false;
 async function initAfip() {
     afip = await getAfipUser();
 
@@ -175,6 +175,7 @@ async function generateAfipInvoice() {
             sentInvoiceData.CAEFchVto = data.CAEFchVto;
             sentInvoiceData.condicionVenta =  $("#condicionVenta").val();
             sentInvoiceData.condicionVentaExtra =  $("#condicionVentaExtra").val();
+            sentInvoiceData.condicionIVA =  $("#condicionIva option:selected").text();
             insertarComprobante(data.CAE, datosCliente, JSON.stringify(sentInvoiceData), JSON.stringify(getInvoiceDetails()));
             invoiceGenerated(lastInvoice + 1, invoiceData.CbteFch);
             return data.CAE;

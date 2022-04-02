@@ -26,8 +26,8 @@ function cargarDatos(cabecera,detalle,cliente,comprobante) {
     $("#viewer").html($("#viewer").html().replace('#FACTURADOR_NOMBRE#','LITORAL FIAT'));
     $("#viewer").html($("#viewer").html().replace('#FACTURADOR_NOMBRE2#','Repuestos y Accesorios'));
     $("#viewer").html($("#viewer").html().replace('#FACTURADOR_NOMBRE3#','Nacionales e Importados'));
-    $("#viewer").html($("#viewer").html().replace('#FACTURADOR_NOMBRE4#','de Jose A. Mercol'));
-    $("#viewer").html($("#viewer").html().replace('#FACTURADOR_DIRECCION#','Eva Peron (ex Córdoba) 4899'));
+    $("#viewer").html($("#viewer").html().replace('#FACTURADOR_NOMBRE4#','de José A. Mercol'));
+    $("#viewer").html($("#viewer").html().replace('#FACTURADOR_DIRECCION#','Eva Perón (ex Córdoba) 4899'));
     $("#viewer").html($("#viewer").html().replace('#FACTURADOR_CIUDAD#','2000 - Rosario'));
     $("#viewer").html($("#viewer").html().replace('#FACTURADOR_TELEFONO#','0341 - 4302123'));
     $("#viewer").html($("#viewer").html().replace('#FACTURADOR_CUIT#','20-11124498-8'));
@@ -43,9 +43,10 @@ function cargarDatos(cabecera,detalle,cliente,comprobante) {
     $("#viewer").html($("#viewer").html().replace('#VTO_CAE_COMPROBANTE#',parsearFechaCAE((cabecera.CAEFchVto ? cabecera.CAEFchVto : '').toString())));
     $("#viewer").html($("#viewer").html().replace('#TOTAL_COMPROBANTE#',parseFloat(cabecera.ImpTotal).toFixed(2)));
     $("#viewer").html($("#viewer").html().replace('#CONDICION_COMPROBANTE#',cabecera.condicionVenta ? cabecera.condicionVenta : ''));
+    $("#viewer").html($("#viewer").html().replace('#CONDICION_IVA_COMPROBANTE#',cabecera.condicionIVA ? cabecera.condicionIVA : ''));
     $("#viewer").html($("#viewer").html().replace('#CONDICION_EXTRA_COMPROBANTE#', (cabecera.condicionVentaExtra && cabecera.condicionVentaExtra != '') ? '(' + cabecera.condicionVentaExtra + ')' : ''));
     $("#viewer").html($("#viewer").html().replace('#TIPO_COMPROBANTE#', ['1','6'].indexOf(cabecera.CbteTipo) != -1 ? 'FACTURA' : 'NOTA DE CREDITO'));
-    $("#viewer").html($("#viewer").html().replace('#DOCTIPO_COMPROBANTE#', cabecera.DocTipo == '99' ? 'DNI' : (cabecera.DocTipo == '80' ? 'CUIT' : 'CUIL')));
+    $("#viewer").html($("#viewer").html().replace('#DOCTIPO_COMPROBANTE#', cabecera.DocTipo == '96' ? 'DNI' : (cabecera.DocTipo == '80' ? 'CUIT' : 'CUIL')));
     let cbteAsoc = '';
     if (cabecera.CbtesAsoc) {
         cbteAsoc = 'Comprobante Asociado: ' + parsearNumeroPtoVta(cabecera.CbtesAsoc.PtoVta) + '-' + parsearNumeroComprobante(cabecera.CbtesAsoc.Nro);
@@ -91,9 +92,9 @@ function generarQR(cabecera,cliente,comprobante) {
 }
 
 function cargarDatosContribuyente(cliente,cabecera) {    
-    $("#viewer").html($("#viewer").html().replace('#CLIENTE_CUIT#',cabecera.DocNro == '0' ? '' : cabecera.DocNro));
+    $("#viewer").html($("#viewer").html().replace('#CLIENTE_CUIT#',cabecera.DocNro == '0' ? '' : (['80','86'].indexOf(cabecera.DocTipo) != -1 ? parsearCuit(cabecera.DocNro) : cabecera.DocNro)));
     if (typeof cliente === 'object') {
-        $("#viewer").html($("#viewer").html().replace('#CLIENTE_NOMBRE#',cliente.datosGenerales.razonSocial ?? cliente.datosGenerales.nombre + ' ' + cliente.datosGenerales.nombre));
+        $("#viewer").html($("#viewer").html().replace('#CLIENTE_NOMBRE#',cliente.datosGenerales.razonSocial ?? cliente.datosGenerales.nombre + ' ' + cliente.datosGenerales.apellido));
         $("#viewer").html($("#viewer").html().replace('#CLIENTE_DIRECCION#',capitalizeFirstLetter(cliente.datosGenerales.domicilioFiscal.direccion)));
         $("#viewer").html($("#viewer").html().replace('#CLIENTE_CIUDAD#',cliente.datosGenerales.domicilioFiscal.localidad ?? cliente.datosGenerales.domicilioFiscal.datoAdicional));
         $("#viewer").html($("#viewer").html().replace('#CLIENTE_CP#','('+ cliente.datosGenerales.domicilioFiscal.codPostal + ')'));
@@ -149,6 +150,10 @@ function cargarDatosComprobanteB(cabecera) {
     $("#viewer").html($("#viewer").html().replace('#NETO_COMPROBANTE#',''));
     $("#viewer").html($("#viewer").html().replace('#IVA105_COMPROBANTE#',''));
     $("#viewer").html($("#viewer").html().replace('#IVA21_COMPROBANTE#',''));
+}
+
+function parsearCuit(cuit) {
+    return cuit.substring(0,2) + '-' + cuit.substring(2,10) + '-' + cuit.substring(10,12);
 }
 
 function parsearFecha(fecha) {
