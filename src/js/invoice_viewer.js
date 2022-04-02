@@ -61,7 +61,33 @@ function cargarDatos(cabecera,detalle,cliente,comprobante) {
     }
 
     remplazarDetalles(detalle, ['1','3'].indexOf(cabecera.CbteTipo) != -1);
+    generarQR(cabecera,cliente,comprobante);
     $("#viewer").show();
+}
+
+function generarQR(cabecera,cliente,comprobante) {
+    var QRCode = require('qrcode');
+    var canvas = document.getElementById('canvas');
+    var datosQR = {
+        "ver":1,
+        "fecha":cabecera.CbteFch.toString().substring(0,4) + '-' + cabecera.CbteFch.toString().substring(4,6) + '-' + cabecera.CbteFch.toString().substring(6,8),
+        "cuit":comprobante.cuit,
+        "ptoVta":cabecera.PtoVta,
+        "tipoCmp":cabecera.CbteTipo,
+        "nroCmp":cabecera.CbteDesde,
+        "importe":cabecera.ImpTotal,
+        "moneda":cabecera.MonId,
+        "ctz":cabecera.MonCotiz,
+        "tipoDocRec":cabecera.DocTipo,
+        "nroDocRec":cabecera.DocNro,
+        "tipoCodAut":"E",
+        "codAut":comprobante.cae
+    };
+
+    QRCode.toCanvas(canvas, 'https://www.afip.gob.ar/fe/qr/?' + btoa(JSON.stringify(datosQR)), function (error) {
+        if (error) console.error(error)
+        console.log('success!');
+      })
 }
 
 function cargarDatosContribuyente(cliente,cabecera) {    
