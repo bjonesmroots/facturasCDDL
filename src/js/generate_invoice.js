@@ -1,3 +1,4 @@
+let emailDestinatario = '';
 $(document).ready(async function() {
     let btn    = $("#generateInvoice"),
         fields = $("#invoice-fields"),
@@ -149,6 +150,13 @@ async function generateInvoice(elem) {
             localStorage.setItem('selectedCaeSavePdf', 'true');
             const ipcRenderer = require("electron").ipcRenderer;
             ipcRenderer.send("printPDF", '');
+            emailDestinatario = $("#emailDestinatario").val();
+            $('#emailDestinatario').val('');
+            if (emailDestinatario && emailDestinatario != '') {
+                setTimeout(function () {
+                    ipcRenderer.send("SendIt", cae, emailDestinatario);
+                },4000);
+            }
         }
     }
 
@@ -159,7 +167,11 @@ function agregarDetalle() {
     $("#detalle").append('<div class="field is-grouped detalle-item">'+$($(".detalle-item")[0]).html()+'</div>');
     initAmountHandlers();
 }
-
+function quitarDetalle() {
+    if ($(".detalle-item").length > 1) {
+        $($($(".detalle-item")[0]).last()).remove();
+    }
+}
 function limpiarDetalles() {
     let detalle = '<div class="field is-grouped detalle-item">'+$($(".detalle-item")[0]).html()+'</div>';
     $("#detalle").html(detalle);

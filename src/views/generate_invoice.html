@@ -52,7 +52,7 @@
         <p class="title has-text-centered mb-0">Generación de comprobantes</p>
       </div>
     </section>
-    <section id="app-body" class="section is-flex is-flex-direction-column is-flex-grow-1">
+    <section id="app-body" class="section is-flex is-flex-direction-column is-flex-grow-1" style="overflow-y: auto;">
         <fieldset id="invoice-fields" class="is-flex-grow-1">
           <div class="field is-grouped">
             <div class="field is-expanded">
@@ -188,10 +188,19 @@
               </div>
             </div>
           </div>
-          <button id="agregarDetalle" class="button is-normal is-info is-fullwidth mt-3" onclick="agregarDetalle();" type="button">Agregar Detalle</button>
+          <button id="quitarDetalle" class="button is-normal is-danger mt-3 ml-3 detail-button" style="float: right;" onclick="quitarDetalle();" type="button">X</button>
+          <button id="agregarDetalle" class="button is-normal is-info mt-3 detail-button" style="float: right;" onclick="agregarDetalle();" type="button">Agregar Detalle</button>
         </fieldset>
-        <button id="generateInvoice" class="button is-medium is-success is-loading is-fullwidth" onclick="generateInvoice(this);" type="button">Generar</button>
-        <button id="limpiarDetalles" class="button is-normal is-warning is-fullwidth mt-3" onclick="limpiarDetalles();" type="button">Limpiar</button>
+        <div>
+          <div class="field is-expanded" style="bottom: 10px;">
+            <label class="label">Email:</label>
+            <div class="control">
+                <input placeholder="Complete un email para enviar el comprobante la generarlo..." id="emailDestinatario" value="" class="input">
+            </div>
+          </div>
+          <button id="generateInvoice" class="button is-medium is-success is-loading is-fullwidth" onclick="generateInvoice(this);" type="button">Generar</button>
+          <button id="limpiarDetalles" class="button is-normal is-warning is-fullwidth mt-3" onclick="limpiarDetalles();" type="button"  style="margin-bottom: -30px;">Limpiar</button>
+        </div>
     </section>
     <div id="page-loader" class="pageloader is-bottom-to-top is-active"><span class="title">Conectando con la AFIP....</span></div>
     <footer id="app-footer" class="footer">
