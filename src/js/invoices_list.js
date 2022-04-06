@@ -116,7 +116,8 @@ function createViewInvoiceWindow(elem, print, savePdf) {
             inputAttrs: {
                 type: 'email'
             },
-            type: 'input'
+            type: 'input',
+            alwaysOnTop: true
         })
         .then((email) => {
             if(email !== null) {        
