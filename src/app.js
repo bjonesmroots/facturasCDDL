@@ -55,6 +55,7 @@ if (!gotTheLock) {
       return { action: 'deny' };
     });
     
+    mainWindow.maximize();
     // Open the DevTools.
     //mainWindow.webContents.openDevTools();
   };

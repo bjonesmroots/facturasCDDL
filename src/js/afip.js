@@ -269,13 +269,14 @@ function getInvoiceNeto(cbteTipo) {
             amount += parseFloat(value);
         });
     } else {
-        $(".neto").each(function (index) {
-            let value  = $(this).val();
-            amount += parseFloat(value);
+        $(".amount").each(function (index) {
+            let item = $(this).closest('.detalle-item');
+            let iva = $(item).find('.iva');
+            amount += parseFloat($(this).val()) / ((1+(parseFloat($(iva).val()))/100));
         });
     }
 
-    return amount;
+    return amount.toFixed(2);
 }
 
 function getInvoiceIVA(cbteTipo) {

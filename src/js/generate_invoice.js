@@ -97,6 +97,16 @@ function handleAmount(input) {
     let amount = parseFloat($(input).val());
     let netoVal = amount / ((1+(parseFloat($(iva).val()))/100));
     $(neto).val(netoVal.toFixed(2));
+    totalizarComprobante();
+}
+
+function totalizarComprobante() {
+    let amount = 0;
+    $(".amount").each(function (index) {
+        let value  = $(this).val();
+        amount += parseFloat(value);
+    });
+    $('#totalComprobante').text('Total: $' + amount.toFixed(2));
 }
 
 function handleTipoDocumento() {
@@ -169,7 +179,7 @@ function agregarDetalle() {
 }
 function quitarDetalle() {
     if ($(".detalle-item").length > 1) {
-        $($($(".detalle-item")[0]).last()).remove();
+        $($(".detalle-item").last()).remove();
     }
 }
 function limpiarDetalles() {

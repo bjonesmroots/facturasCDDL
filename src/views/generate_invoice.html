@@ -192,10 +192,15 @@
           <button id="agregarDetalle" class="button is-normal is-info mt-3 detail-button" style="float: right;" onclick="agregarDetalle();" type="button">Agregar Detalle</button>
         </fieldset>
         <div>
-          <div class="field is-expanded" style="bottom: 10px;">
-            <label class="label">Email:</label>
-            <div class="control">
-                <input placeholder="Complete un email para enviar el comprobante la generarlo..." id="emailDestinatario" value="" class="input">
+          <div class="field is-grouped">
+            <div class="field is-expanded" style="bottom: 10px;">
+              <label class="label">Email:</label>
+              <div class="control">
+                  <input placeholder="Complete un email para enviar el comprobante la generarlo..." id="emailDestinatario" value="" class="input">
+              </div>
+            </div>
+            <div class="field" style="bottom: 10px;">
+              <label id="totalComprobante" class="label">Total: $0.00</label>
             </div>
           </div>
           <button id="generateInvoice" class="button is-medium is-success is-loading is-fullwidth" onclick="generateInvoice(this);" type="button">Generar</button>
