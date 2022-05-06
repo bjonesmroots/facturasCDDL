@@ -73,7 +73,7 @@ if (!gotTheLock) {
     workerWindow.loadURL("file://" + __dirname + "/views/invoice_viewer.html");
     setTimeout(function () {
       workerWindow.webContents.send("printPDF", content);
-    },1000)
+    },2000)
   });
   
   ipcMain.on("readyToPrintPDF", (event, selectedCaePrint, selectedCaeSavePdf, cae) => {
