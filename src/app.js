@@ -117,7 +117,7 @@ if (!gotTheLock) {
       service: "gmail",
       auth: {
         user: "litoralfiatrosario@gmail.com",
-        pass: "Asdasd123.",
+        pass: "sgfrewotlzsnpqzq",
       },
     });
   
