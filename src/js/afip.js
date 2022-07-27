@@ -118,7 +118,7 @@ async function getInvoicesListInfo(dateFrom, dateTo) {
 
     try {
         let POS      = $("#pointOfSale").val(),
-            invoices = new Uint8Array([...Array(lastInvoiceNumber + 1).keys()]).subarray(1),
+            invoices = new Uint16Array([...Array(lastInvoiceNumber + 1).keys()]).subarray(1),
             first    = await binaryInvoiceDateSearch(invoices, dateFrom),
             last     = await binaryInvoiceDateSearch(invoices, dateTo),
             inRange  = invoices.subarray(first, last),
