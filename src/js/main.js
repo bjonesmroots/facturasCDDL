@@ -27,7 +27,7 @@ async function setDatosContribuyenteFacturador() {
     if (!datosContribuyenteFacturador) {
         let cuitContribuyente = await getCuit();
         if (!production) {
-            cuitContribuyente = '30000000007'
+            cuitContribuyente = '30500010912'
         }
         await getContribuyente(cuitContribuyente).then(contribuyente => {
             if (contribuyente && contribuyente.datosGenerales) {

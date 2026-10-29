@@ -102,13 +102,19 @@ async function getLastInvoice() {
     }
 }
 
+function isMissingVoucher(error) {
+    return String(error && (error.message || error)).indexOf('(602)') !== -1;
+}
+
 async function getInvoiceInfo(invoice) {
     try {
         let pointOfSale = $("#pointOfSale").val();
         return await afip.ElectronicBilling.getVoucherInfo(invoice, pointOfSale, $("#invoiceType").val());
     } 
     catch (e) {
-        errorMessage(e);
+        if (!isMissingVoucher(e)) {
+            errorMessage(e);
+        }
         return null;
     }
 }
@@ -116,17 +122,27 @@ async function getInvoiceInfo(invoice) {
 async function getInvoicesListInfo(dateFrom, dateTo) {
     let invoicesList = [];
 
+    if (!(lastInvoiceNumber > 0)) {
+        return invoicesList;
+    }
+
     try {
-        let POS      = $("#pointOfSale").val(),
-            invoices = new Uint16Array([...Array(lastInvoiceNumber + 1).keys()]).subarray(1),
+        let invoices = new Uint16Array([...Array(lastInvoiceNumber + 1).keys()]).subarray(1),
             first    = await binaryInvoiceDateSearch(invoices, dateFrom),
-            last     = await binaryInvoiceDateSearch(invoices, dateTo),
-            inRange  = invoices.subarray(first, last),
+            last     = await binaryInvoiceDateSearch(invoices, dateTo);
+
+        if (first == null || last == null) {
+            return await invoicesFromLatest(dateFrom, dateTo);
+        }
+
+        let inRange = invoices.subarray(first, last),
             data;
-            
+
         for (let i = 0; i < inRange.length; i++) {
-            data = await afip.ElectronicBilling.getVoucherInfo(inRange[i], POS, $("#invoiceType").val());
-            invoicesList.push(data);
+            data = await getInvoiceInfo(inRange[i]);
+            if (data && data.CbteFch != null) {
+                invoicesList.push(data);
+            }
         }
     } 
     catch (e) {
@@ -136,11 +152,38 @@ async function getInvoicesListInfo(dateFrom, dateTo) {
     return invoicesList;
 }
 
+async function invoicesFromLatest(dateFrom, dateTo) {
+    let invoicesList = [];
+
+    for (let n = lastInvoiceNumber; n >= 1; n--) {
+        let data = await getInvoiceInfo(n);
+
+        if (!data || data.CbteFch == null) {
+            continue;
+        }
+
+        let voucherDate = parseInvoiceDate(data.CbteFch);
+        if (voucherDate >= dateTo) {
+            continue;
+        }
+        if (voucherDate < dateFrom) {
+            break;
+        }
+
+        invoicesList.push(data);
+    }
+
+    return invoicesList;
+}
+
 async function getLastInvoiceDate() {
     try {
         let invoice = await getLastInvoice();
         if (invoice) {
             let info = await getInvoiceInfo(invoice);
+            if (!info || info.CbteFch == null) {
+                return null;
+            }
             return parseInvoiceDate(info.CbteFch);
         }
         return null;
@@ -201,6 +244,19 @@ function getInvoiceDetails() {
     return detalles;
 }
 
+function condicionIvaReceptorId() {
+    // Ids de FEParamGetCondicionIvaReceptor. Los values del select son los códigos viejos del formulario.
+    const map = {
+        '0': 5,   // Consumidor Final. Válido en factura B y C.
+        '4': 4,   // IVA Sujeto Exento. Válido en factura B y C.
+        '6': 6,   // Responsable Monotributo. Válido en factura A y C.
+        '11': 1   // IVA Responsable Inscripto. Válido en factura A y C.
+    };
+    const selected = String($("#condicionIva").val());
+
+    return map[selected] !== undefined ? map[selected] : 5;
+}
+
 async function getInvoiceData(lastInvoice) {
     let concept     = $("#concept").val(),
         pointOfSale = $("#pointOfSale").val(),
@@ -236,7 +292,8 @@ async function getInvoiceData(lastInvoice) {
             'ImpIVA' 		: impIva,          // Importe total de IVA
             'ImpTrib' 		: 0,            // Importe total de tributos
             'MonId' 		: 'PES',        // Tipo de moneda usada en el comprobante ('PES' para pesos argentinos) 
-            'MonCotiz' 		: 1,            // Cotización de la moneda usada (1 para pesos argentinos)  
+            'MonCotiz' 		: 1,            // Cotización de la moneda usada (1 para pesos argentinos)
+            'CondicionIVAReceptorId' : condicionIvaReceptorId(), // RG 5616
         };
         if (iva) {
             invoiceData.Iva = iva;
@@ -417,6 +474,9 @@ async function binaryInvoiceDateSearch(list, date) {
     while (from  <= to) {
         m = parseInt(from + (to - from) / 2);
         i = await getInvoiceInfo(list[m]);
+        if (!i || i.CbteFch == null) {
+            return null;
+        }
         d = parseInvoiceDate(i.CbteFch);
 
         if (d < date) {

@@ -67,6 +67,9 @@ async function searchAfipInvoices() {
         if (invs.length) {
             totalAmount = invs.reduce((a, b) => a + (parseInt(b["ImpTotal"]) || 0), 0);
             invs.reverse().forEach(invoice => {
+                if (!invoice || invoice.CbteFch == null) {
+                    return;
+                }
                 clone = template.clone();
                 
                 clone.removeAttr("id");

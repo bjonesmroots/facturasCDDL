@@ -33,6 +33,7 @@ $(document).ready(async function() {
             $('#cbteAsoc').attr('disabled','disabled');
         }
     });
+    $('#condicionIva').on("change", aplicarTipoComprobanteSegunCondicion);
     tipoDocumento.val(96);
     handleTipoDocumento(tipoDocumento);
 });
@@ -67,20 +68,16 @@ function consultarCuit() {
             } else {
                 $('#razonSocial').val(contribuyente.datosGenerales.razonSocial);
             }
-            if (contribuyente.datosRegimenGeneral) {
+            if (esSujetoExento(contribuyente)) {
+                $('#condicionIva').val(4);
+            } else if (contribuyente.datosRegimenGeneral) {
                 $('#condicionIva').val(11);
             } else if (contribuyente.datosMonotributo) {
                 $('#condicionIva').val(6);
             } else {
                 $('#condicionIva').val(0);
             }
-            if (datosContribuyenteFacturador.datosRegimenGeneral && $('#condicionIva').val() == 11) {
-                $('#invoiceType').val(1);
-            } else if (datosContribuyenteFacturador.datosRegimenGeneral && $('#condicionIva').val() != 11) {
-                $('#invoiceType').val(6);
-            } else if (!datosContribuyenteFacturador.datosRegimenGeneral) {
-                $('#invoiceType').val(11);
-            }
+            aplicarTipoComprobanteSegunCondicion();
             $('#generateInvoice').removeAttr('disabled');
         } else {
             cliente = null;
@@ -107,6 +104,35 @@ function totalizarComprobante() {
         amount += parseFloat(value);
     });
     $('#totalComprobante').text('Total: $' + amount.toFixed(2));
+}
+
+function esSujetoExento(contribuyente) {
+    let regimen = contribuyente.datosRegimenGeneral,
+        impuestos = regimen && regimen.impuesto;
+
+    if (!impuestos) {
+        return false;
+    }
+
+    impuestos = Array.isArray(impuestos) ? impuestos : [impuestos];
+    let ids = impuestos.map(function (impuesto) { return String(impuesto.idImpuesto); });
+
+    // Padrón A5: 32 es IVA EXENTO y 30 es IVA. Si conviven, sigue inscripto.
+    return ids.indexOf('32') != -1 && ids.indexOf('30') == -1;
+}
+
+function aplicarTipoComprobanteSegunCondicion() {
+    if (!datosContribuyenteFacturador) {
+        return;
+    }
+
+    if (datosContribuyenteFacturador.datosRegimenGeneral && $('#condicionIva').val() == 11) {
+        $('#invoiceType').val(1);
+    } else if (datosContribuyenteFacturador.datosRegimenGeneral && $('#condicionIva').val() != 11) {
+        $('#invoiceType').val(6);
+    } else if (!datosContribuyenteFacturador.datosRegimenGeneral) {
+        $('#invoiceType').val(11);
+    }
 }
 
 function handleTipoDocumento() {
