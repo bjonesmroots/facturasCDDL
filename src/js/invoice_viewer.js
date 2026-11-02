@@ -127,6 +127,7 @@ function remplazarDetalles(detalle, tieneIva) {
 }
 
 function cargarDatosComprobanteA(cabecera) {
+    limpiarTransparenciaFiscal();
     $("#viewer").html($("#viewer").html().replace('#IVA21_TEXTO#','IVA 21%:'));
     $("#viewer").html($("#viewer").html().replace('#IVA105_TEXTO#','IVA 10.5%:'));
     $("#viewer").html($("#viewer").html().replace('#NETO_TEXTO#','Importe Neto Gravado: $'));
@@ -140,6 +141,11 @@ function cargarDatosComprobanteA(cabecera) {
 }
 
 function cargarDatosComprobanteB(cabecera) {
+    if (['6','8'].indexOf(String(cabecera.CbteTipo)) != -1) {
+        cargarTransparenciaFiscal(cabecera);
+    } else {
+        limpiarTransparenciaFiscal();
+    }
     $("#viewer").html($("#viewer").html().replace('#IVA21_TEXTO#',''));
     $("#viewer").html($("#viewer").html().replace('#IVA105_TEXTO#',''));
     $("#viewer").html($("#viewer").html().replace('#NETO_TEXTO#',''));
@@ -150,6 +156,22 @@ function cargarDatosComprobanteB(cabecera) {
     $("#viewer").html($("#viewer").html().replace('#NETO_COMPROBANTE#',''));
     $("#viewer").html($("#viewer").html().replace('#IVA105_COMPROBANTE#',''));
     $("#viewer").html($("#viewer").html().replace('#IVA21_COMPROBANTE#',''));
+}
+
+function cargarTransparenciaFiscal(cabecera) {
+    let iva = parseFloat(cabecera.ImpIVA);
+    if (isNaN(iva)) {
+        iva = parseFloat(cabecera.ImpTotal) - parseFloat(cabecera.ImpNeto);
+    }
+    $("#viewer").html($("#viewer").html().replace('#TRANSPARENCIA_TEXTO#','Régimen de Transparencia Fiscal al Consumidor (Ley 27.743)'));
+    $("#viewer").html($("#viewer").html().replace('#IVA_CONTENIDO_TEXTO#','IVA Contenido: $'));
+    $("#viewer").html($("#viewer").html().replace('#IVA_CONTENIDO#', isNaN(iva) ? '' : iva.toFixed(2)));
+}
+
+function limpiarTransparenciaFiscal() {
+    $("#viewer").html($("#viewer").html().replace('#TRANSPARENCIA_TEXTO#',''));
+    $("#viewer").html($("#viewer").html().replace('#IVA_CONTENIDO_TEXTO#',''));
+    $("#viewer").html($("#viewer").html().replace('#IVA_CONTENIDO#',''));
 }
 
 function parsearCuit(cuit) {
